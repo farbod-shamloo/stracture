@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+/* تعریف فونت سفارشی */
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/Vazirmatn-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+    font-family: 'Vazir', sans-serif !important;
+  }
+  
+
+/* اعمال فونت به کل پروژه */
+body, button, input, textarea {
+  font-family: 'Vazir', sans-serif;
+  direction: rtl;
+}
