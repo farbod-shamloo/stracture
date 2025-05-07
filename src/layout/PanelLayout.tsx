@@ -5,7 +5,9 @@ import {
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
-  
+  EditOutlined,
+  LockOutlined,
+  ToolOutlined 
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme, Drawer, Button } from "antd";
@@ -80,10 +82,37 @@ const PanelLayout: React.FC = () => {
   const sidebarContent = (
     <>
       <div className="text-white text-center text-xl font-bold py-4">
-        پنل ادمین
+        <Button
+          icon={<UserOutlined />}
+          type="text"
+          onClick={() => setShowDrawer(true)}
+          style={{ fontSize: "20px" }}
+          className="!bg-gray-300 !rounded-[50%]"
+        />
+        <div className="mt-2 flex justify-center gap-2 hidden xl:flex">
+  <Button
+    icon={<EditOutlined />}
+    type="text"
+    style={{ fontSize: "20px" }}
+    className="!text-emerald-500 !rounded-[50%]"
+  />
+  <Button
+    icon={<LockOutlined />}
+    type="text"
+    style={{ fontSize: "20px" }}
+    className="!text-red-400 !rounded-[50%]"
+  />
+
+<Button
+    icon={<ToolOutlined />}
+    type="text"
+    style={{ fontSize: "20px" }}
+    className="!text-amber-500 !rounded-[50%]"
+  />
+</div>
       </div>
       <Menu
-        theme="dark"
+        theme="light"
         defaultSelectedKeys={["1"]}
         mode="inline"
         items={items}
@@ -94,7 +123,7 @@ const PanelLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {!hideSidebar && (
-        <Sider collapsible={false} collapsed={collapsed}>
+        <Sider theme="light" collapsible={false} collapsed={collapsed}>
           {sidebarContent}
         </Sider>
       )}
@@ -124,7 +153,7 @@ const PanelLayout: React.FC = () => {
                   icon={<UserOutlined />}
                   type="text"
                   onClick={() => setShowDrawer(true)}
-                  style={{ fontSize: "20px", }}
+                  style={{ fontSize: "20px" }}
                   className="!bg-gray-300 !rounded-[50%]"
                 />
               </div>
@@ -133,7 +162,6 @@ const PanelLayout: React.FC = () => {
               <Breadcrumb.Item>پنل</Breadcrumb.Item>
               <Breadcrumb.Item>داشبورد</Breadcrumb.Item>
             </Breadcrumb>
-
           </div>
 
           <div
