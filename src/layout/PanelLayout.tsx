@@ -111,12 +111,7 @@ const PanelLayout: React.FC = () => {
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
-          <div className="flex justify-between items-center mt-4">
-            <Breadcrumb>
-              <Breadcrumb.Item>پنل</Breadcrumb.Item>
-              <Breadcrumb.Item>داشبورد</Breadcrumb.Item>
-            </Breadcrumb>
-
+          <div className="flex justify-start items-center mt-4">
             {isMobile && (
               <div
                 style={{
@@ -134,6 +129,11 @@ const PanelLayout: React.FC = () => {
                 />
               </div>
             )}
+            <Breadcrumb>
+              <Breadcrumb.Item>پنل</Breadcrumb.Item>
+              <Breadcrumb.Item>داشبورد</Breadcrumb.Item>
+            </Breadcrumb>
+
           </div>
 
           <div
