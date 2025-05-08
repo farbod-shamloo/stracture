@@ -1,20 +1,14 @@
-import PanelLayout from "./layout/PanelLayout"
+// src/App.tsx
+import { BrowserRouter } from "react-router-dom";
+import router from "./routes/router";
+import { RouterProvider } from 'react-router-dom';
 
-// import ErrorLayout from "./layout/ErrorLayout";
-
-// import LoginLayout from "./layout/LoginLayout";
-
-// import LandingPage from "./layout/LandingLayout"; 
-
-function App() {
+const App = () => {
   return (
-    <div>
-      <PanelLayout />
-      {/* <LandingPage /> */}
-      {/* <LoginLayout /> */}
-      {/* <ErrorLayout /> */}
-    </div>
+    <BrowserRouter>
+      <RouterProvider router={router} />
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

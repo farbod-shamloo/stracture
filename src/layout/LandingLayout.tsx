@@ -1,6 +1,7 @@
 import { Layout, Button, Tooltip, Menu, Drawer } from "antd";
 import { UserOutlined, LoginOutlined, MenuOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 const { Header, Content, Footer } = Layout;
 
@@ -34,7 +35,7 @@ function LandingLayout() {
             <Button
               shape="circle"
               icon={<UserOutlined />}
-              href="/admin"
+              href="/panel"
               type="default"
               className="text-white hover:bg-transparent hover:text-white transition duration-300"
             />
@@ -68,7 +69,7 @@ function LandingLayout() {
               <Button
                 shape="circle"
                 icon={<UserOutlined />}
-                href="/admin"
+                href="/panel"
                 type="default"
                 className="text-white hover:bg-transparent hover:text-white transition duration-300"
               />
@@ -90,19 +91,7 @@ function LandingLayout() {
       </Drawer>
 
       <Content className="p-10 text-center text-white">
-        <h1 className="text-5xl font-extrabold mb-6 drop-shadow-lg">
-          به سایت ما خوش آمدید
-        </h1>
-        <p className="text-lg mb-6 opacity-75 drop-shadow-md">
-          اینجا شروع مسیر موفقیت شماست...
-        </p>
-        <Button
-          type="primary"
-          size="large"
-          className="bg-pink-500 hover:bg-pink-600 transition duration-300"
-        >
-          شروع کنید
-        </Button>
+      <Outlet />
       </Content>
 
       {/* فوتر */}
