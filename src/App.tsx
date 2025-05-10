@@ -2,12 +2,16 @@
 import { BrowserRouter } from "react-router-dom";
 import router from "./routes/router";
 import { RouterProvider } from 'react-router-dom';
+import { ConfigProvider, theme } from "antd";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <RouterProvider router={router} />
-    </BrowserRouter>
+    <ConfigProvider
+     
+      >
+     <RouterProvider router={router} />
+  </ConfigProvider>
+   
   );
 };
 

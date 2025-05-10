@@ -8,17 +8,16 @@ import {
   EditOutlined,
   LockOutlined,
   LogoutOutlined,
-  
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme, Drawer, Button } from "antd";
 import { Popconfirm } from "antd";
 import { useNavigate } from "react-router-dom"; // اضافه کردن useNavigate
-import Dashboard from "../pages/panel/Dashboard";
-import Orders from "../pages/panel/Orders";
-import Users from "../pages/panel/Users";
-import Team from "../pages/panel/team";
-import Files from "../pages/panel/files";
+import Dashboard from "../pages/Panel/Dashboard";
+import Orders from "../pages/Panel/Order/IndexOrders";
+import Users from "../pages/Panel/Users";
+import Team from "../pages/Panel/Team";
+import Files from "../pages/Panel/Files";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -47,7 +46,7 @@ const items: MenuItem[] = [
   getItem("داشبورد", "1", <PieChartOutlined />),
   getItem("سفارشات", "2", <DesktopOutlined />),
   getItem("کاربران", "3", <UserOutlined />), // هیچ children نمی‌دیم
-  getItem("تیم", "4", <TeamOutlined />),     // همین‌طور
+  getItem("تیم", "4", <TeamOutlined />), // همین‌طور
   getItem("فایل‌ها", "5", <FileOutlined />),
 ];
 
@@ -151,10 +150,10 @@ const PanelLayout: React.FC = () => {
     }
   };
 
-  const handleLogout = () =>{
+  const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
-  }
+  };
 
   const sidebarContent = (
     <>
@@ -166,21 +165,16 @@ const PanelLayout: React.FC = () => {
           style={{ fontSize: "20px" }}
           className="!bg-gray-300 !rounded-[50%]"
         />
-        
-        <div className="mt-2 flex justify-center gap-2 hidden xl:flex">
-        <Popconfirm
-          title="آیا مطمئن هستی که می‌خوای خارج بشی؟"
-          okText="بله"
-          cancelText="خیر"
-          onConfirm={handleLogout}
-        >
-          <Button
-            icon={<LogoutOutlined />}
-            type="text"
-            danger
-          />
-</Popconfirm>
 
+        <div className="mt-2 flex justify-center gap-2 hidden xl:flex">
+          <Popconfirm
+            title="آیا مطمئن هستی که می‌خوای خارج بشی؟"
+            okText="بله"
+            cancelText="خیر"
+            onConfirm={handleLogout}
+          >
+            <Button icon={<LogoutOutlined />} type="text" danger />
+          </Popconfirm>
 
           <Button
             icon={<EditOutlined />}
@@ -194,8 +188,6 @@ const PanelLayout: React.FC = () => {
             style={{ fontSize: "20px" }}
             className="!text-red-400 !rounded-[50%]"
           />
-
-
         </div>
       </div>
       <Menu
@@ -223,7 +215,6 @@ const PanelLayout: React.FC = () => {
         open={showDrawer}
       >
         {sidebarContent}
-        
       </Drawer>
 
       <Layout>
