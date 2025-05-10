@@ -17,3 +17,4 @@ export const withSuspense = (Component: LazyExoticComponent<ComponentType<any>>)
     </Suspense>
   );
 };
+ 

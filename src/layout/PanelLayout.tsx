@@ -1,97 +1,19 @@
+// layouts/PanelLayout.tsx
 import React, { useEffect, useState } from "react";
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-  EditOutlined,
-  LockOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme, Drawer, Button } from "antd";
-import { Popconfirm } from "antd";
-import { useNavigate } from "react-router-dom"; // اضافه کردن useNavigate
-import Dashboard from "../pages/Panel/Dashboard";
-import Orders from "../pages/Panel/Order/IndexOrders";
-import Users from "../pages/Panel/Users";
-import Team from "../pages/Panel/Team";
-import Files from "../pages/Panel/Files";
+import { Layout, Breadcrumb, theme, Button, Drawer } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { Outlet, useNavigate } from "react-router-dom";
+import SidebarContent from "../pages/Panel/Sidebar/indexSidebar";
 
 const { Content, Footer, Sider } = Layout;
-
-type MenuItem = Required<MenuProps>["items"][number];
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
-  const item: any = {
-    key,
-    icon,
-    label,
-  };
-
-  if (children && children.length > 0) {
-    item.children = children;
-  }
-
-  return item as MenuItem;
-}
-
-const items: MenuItem[] = [
-  getItem("داشبورد", "1", <PieChartOutlined />),
-  getItem("سفارشات", "2", <DesktopOutlined />),
-  getItem("کاربران", "3", <UserOutlined />), // هیچ children نمی‌دیم
-  getItem("تیم", "4", <TeamOutlined />), // همین‌طور
-  getItem("فایل‌ها", "5", <FileOutlined />),
-];
 
 const PanelLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [hideSidebar, setHideSidebar] = useState(false);
-  const [selectedKey, setSelectedKey] = useState("1");
-  const navigate = useNavigate(); // استفاده از useNavigate
-
-  const renderContent = () => {
-    switch (selectedKey) {
-      case "1":
-        return <Dashboard />;
-      case "2":
-        return <Orders />;
-      case "3":
-        return <Users />;
-
-      case "4":
-        return <Team />;
-      case "5":
-        return <Files />;
-      default:
-        return "محتوا یافت نشد";
-    }
-  };
-
-  const getBreadcrumb = () => {
-    switch (selectedKey) {
-      case "1":
-        return ["پنل", "داشبورد"];
-      case "2":
-        return ["پنل", "سفارشات"];
-      case "3":
-        return ["پنل", "کاربران"];
-      case "4":
-        return ["پنل", "تیم"];
-      case "5":
-        return ["پنل", "فایل‌ها"];
-      default:
-        return ["پنل"];
-    }
-  };
+  const [selectedKey, setSelectedKey] = useState("/panel/dashboard");
+  const navigate = useNavigate();
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -99,22 +21,20 @@ const PanelLayout: React.FC = () => {
 
   useEffect(() => {
     const storedKey = localStorage.getItem("selectedKey");
-    if (storedKey) {
-      setSelectedKey(storedKey); // اگر تب ذخیره شده در localStorage وجود دارد، آن را بارگذاری کن
-    }
+    if (storedKey) setSelectedKey(storedKey);
+
     const handleResize = () => {
       const width = window.innerWidth;
-
       if (width < 700) {
-        setHideSidebar(true); // سایدبار کامل حذف
-        setIsMobile(true); // حالت موبایل
-        setCollapsed(true); // پیش‌فرض بسته
+        setHideSidebar(true);
+        setIsMobile(true);
+        setCollapsed(true);
       } else if (width < 1024) {
         setHideSidebar(false);
-        setCollapsed(true); // فقط جمع
+        setCollapsed(true);
         setIsMobile(false);
       } else {
-        setHideSidebar(false); // سایدبار کامل باز
+        setHideSidebar(false);
         setCollapsed(false);
         setIsMobile(false);
       }
@@ -125,29 +45,11 @@ const PanelLayout: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // تابع handleMenu برای تغییر مسیر
-  const handleMenu = (key: string) => {
+  const handleMenuClick = (key: string) => {
     setSelectedKey(key);
     localStorage.setItem("selectedKey", key);
-    switch (key) {
-      case "1":
-        navigate("/panel/dashboard");
-        break;
-      case "2":
-        navigate("/panel/orders");
-        break;
-      case "3":
-        navigate("/panel/users");
-        break;
-      case "4":
-        navigate("/panel/team");
-        break;
-      case "5":
-        navigate("/panel/files");
-        break;
-      default:
-        break;
-    }
+    navigate(key);
+    setShowDrawer(false);
   };
 
   const handleLogout = () => {
@@ -155,79 +57,43 @@ const PanelLayout: React.FC = () => {
     navigate("/");
   };
 
-  const sidebarContent = (
-    <>
-      <div className="text-white text-center text-xl font-bold py-4">
-        <Button
-          icon={<UserOutlined />}
-          type="text"
-          onClick={() => setShowDrawer(true)}
-          style={{ fontSize: "20px" }}
-          className="!bg-gray-300 !rounded-[50%]"
-        />
+  const getBreadcrumb = () => {
+    switch (selectedKey) {
+      case "/panel/dashboard":
+        return ["پنل", "داشبورد"];
+      case "/panel/orders":
+        return ["پنل", "سفارشات"];
+      case "/panel/users":
+        return ["پنل", "کاربران"];
+      case "/panel/team":
+        return ["پنل", "تیم"];
+      case "/panel/files":
+        return ["پنل", "فایل‌ها"];
+      default:
+        return ["پنل"];
+    }
+  };
 
-        <div className="mt-2 flex justify-center gap-2 hidden xl:flex">
-          <Popconfirm
-            title="آیا مطمئن هستی که می‌خوای خارج بشی؟"
-            okText="بله"
-            cancelText="خیر"
-            onConfirm={handleLogout}
-          >
-            <Button icon={<LogoutOutlined />} type="text" danger />
-          </Popconfirm>
-
-          <Button
-            icon={<EditOutlined />}
-            type="text"
-            style={{ fontSize: "20px" }}
-            className="!text-emerald-500 !rounded-[50%]"
-          />
-          <Button
-            icon={<LockOutlined />}
-            type="text"
-            style={{ fontSize: "20px" }}
-            className="!text-red-400 !rounded-[50%]"
-          />
-        </div>
-      </div>
-      <Menu
-        theme="light"
-        defaultSelectedKeys={["1"]}
-        mode="inline"
-        items={items}
-        onClick={({ key }) => handleMenu(key)} // استفاده از handleMenu
-      />
-    </>
+  const sidebar = (
+    <SidebarContent onMenuClick={handleMenuClick} onLogout={handleLogout} />
   );
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {!hideSidebar && (
         <Sider theme="light" collapsible={false} collapsed={collapsed}>
-          {sidebarContent}
+          {sidebar}
         </Sider>
       )}
-
-      <Drawer
-        title="منو"
-        placement="right"
-        onClose={() => setShowDrawer(false)}
-        open={showDrawer}
-      >
-        {sidebarContent}
+      <Drawer title="منو" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+        {sidebar}
       </Drawer>
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
           <div className="flex justify-start items-center mt-4">
             {isMobile && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  padding: "10px 16px",
-                }}
-              >
+              <div style={{ padding: "10px 16px" }}>
                 <Button
                   icon={<UserOutlined />}
                   type="text"
@@ -253,13 +119,11 @@ const PanelLayout: React.FC = () => {
               marginTop: 16,
             }}
           >
-            {renderContent()}
+            <Outlet />
           </div>
         </Content>
 
-        <Footer style={{ textAlign: "center" }}>
-          ساخته شده با ❤️ توسط فربد
-        </Footer>
+        <Footer style={{ textAlign: "center" }}>ساخته شده با ❤️ توسط فربد</Footer>
       </Layout>
     </Layout>
   );

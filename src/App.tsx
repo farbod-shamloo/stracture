@@ -1,13 +1,12 @@
 // src/App.tsx
-import { BrowserRouter } from "react-router-dom";
 import router from "./routes/router";
 import { RouterProvider } from 'react-router-dom';
-import { ConfigProvider, theme } from "antd";
+import { ConfigProvider } from "antd";
 
 const App = () => {
   return (
     <ConfigProvider
-     
+    
       >
      <RouterProvider router={router} />
   </ConfigProvider>
