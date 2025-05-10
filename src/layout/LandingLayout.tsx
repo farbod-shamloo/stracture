@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 const { Header, Content, Footer } = Layout;
 
-function LandingLayout() {
+const LandingLayout: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => setVisible(true);

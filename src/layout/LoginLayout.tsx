@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 const { Content, Footer } = Layout;
 const { TabPane } = Tabs;
 
-function LoginLayout() {
+const LoginLayout: React.FC = () => {
   const onFinishLogin = () => {
     message.success('ورود با موفقیت انجام شد');
   };
