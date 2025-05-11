@@ -20,10 +20,10 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode)
 }
 
 const items: MenuItem[] = [
-  getItem("داشبورد", "/panel/dashboard", <PieChartOutlined />),
-  getItem("سفارشات", "/panel/orders", <DesktopOutlined />),
   getItem("کاربران", "/panel/users", <UserOutlined />),
+  getItem("سفارشات", "/panel/orders", <DesktopOutlined />),
   getItem("تیم", "/panel/team", <TeamOutlined />),
+  getItem("کاربران", "/panel/dashboard", <UserOutlined />),
   getItem("فایل‌ها", "/panel/files", <FileOutlined />),
 ];
 

@@ -60,7 +60,7 @@ const PanelLayout: React.FC = () => {
   const getBreadcrumb = () => {
     switch (selectedKey) {
       case "/panel/dashboard":
-        return ["پنل", "داشبورد"];
+        return ["پنل", "کاربران"];
       case "/panel/orders":
         return ["پنل", "سفارشات"];
       case "/panel/users":

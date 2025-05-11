@@ -18,3 +18,34 @@ body, button, input, textarea {
   font-family: 'Vazir', sans-serif;
   direction: rtl;
 }
+
+.even-row {
+  background-color: #f9f9f9; /* مثلاً رنگ روشن */
+}
+
+.odd-row {
+  background-color: #ffffff; /* رنگ سفید یا دلخواه */
+}
+
+
+.custom-user-table .ant-table-thead > tr > th {
+  background-color: #a6afc5; /* مثلاً سورمه‌ای تیره */
+  color: #f1f5f9; /* آبی روشن یا سفید */
+}
+
+
+.ant-table-thead > tr > th {
+  text-align: center !important;
+}
+
+/* سلول‌های بدنه جدول */
+.ant-table-tbody > tr > td {
+  text-align: center !important;
+}
+
+/* حذف تمام خطوط تقسیم جدول */
+.ant-table-wrapper .ant-table-cell {
+  border: none !important;
+  border-inline-start: none !important;
+  box-shadow: none !important;
+}
