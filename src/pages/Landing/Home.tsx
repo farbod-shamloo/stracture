@@ -1,5 +1,9 @@
 import { Button, Typography, Card, Row, Col } from "antd";
-import { InfoCircleOutlined, CheckCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import {
+  InfoCircleOutlined,
+  CheckCircleOutlined,
+  PlayCircleOutlined,
+} from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
@@ -7,10 +11,16 @@ function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10">
       <Title className="text-4xl font-extrabold mb-4 text-center">
+        <i
+          className="fas fa-user-shield"
+          style={{ fontSize: "40px", color: "darkgreen" }}
+        ></i>
         به سایت ما خوش آمدید
       </Title>
       <Paragraph className="text-lg mb-8 opacity-80 text-center max-w-2xl">
-        ما در اینجا مسیر یادگیری و توسعه شما را تسهیل می‌کنیم. چه به دنبال شروع از صفر باشی، چه بخواهی مهارت‌های خود را ارتقا دهی، ما به شما کمک می‌کنیم.
+        ما در اینجا مسیر یادگیری و توسعه شما را تسهیل می‌کنیم. چه به دنبال شروع
+        از صفر باشی، چه بخواهی مهارت‌های خود را ارتقا دهی، ما به شما کمک
+        می‌کنیم.
       </Paragraph>
 
       <Button
@@ -20,6 +30,7 @@ function Home() {
       >
         شروع کن
       </Button>
+<i className="fal fa-bell"></i>
 
       {/* کارت‌های ویژگی‌ها */}
       <Row gutter={[16, 16]} className="w-full md:w-2/3">
@@ -31,7 +42,8 @@ function Home() {
           >
             <Title level={4}>آموزش‌های اختصاصی</Title>
             <Paragraph>
-              ما آموزش‌های متنوعی داریم که می‌تواند به شما کمک کند تا به راحتی مسیر یادگیری خود را شروع کنید.
+              ما آموزش‌های متنوعی داریم که می‌تواند به شما کمک کند تا به راحتی
+              مسیر یادگیری خود را شروع کنید.
             </Paragraph>
           </Card>
         </Col>
@@ -55,7 +67,8 @@ function Home() {
           >
             <Title level={4}>دوره‌های تعاملی</Title>
             <Paragraph>
-              در دوره‌های تعاملی ما، می‌توانید با دیگران همکاری کنید و یاد بگیرید.
+              در دوره‌های تعاملی ما، می‌توانید با دیگران همکاری کنید و یاد
+              بگیرید.
             </Paragraph>
           </Card>
         </Col>

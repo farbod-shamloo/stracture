@@ -3,19 +3,22 @@ import React from "react";
 import {
   DesktopOutlined,
   FileOutlined,
-  PieChartOutlined,
   TeamOutlined,
   UserOutlined,
-  EditOutlined,
-  LockOutlined,
-  LogoutOutlined,
 } from "@ant-design/icons";
-import { Menu, Button, Popconfirm } from "antd";
+import { Menu, Button, Popconfirm, Avatar } from "antd";
 import type { MenuProps } from "antd";
+import { useUser } from "../../../context/userContext";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import FullscreenToggleButton from "../../../components/common/Fullscreen";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode): MenuItem {
+function getItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode
+): MenuItem {
   return { key, icon, label } as MenuItem;
 }
 
@@ -33,28 +36,54 @@ interface Props {
 }
 
 const SidebarContent: React.FC<Props> = ({ onMenuClick, onLogout }) => {
+  const { user } = useUser();
   return (
     <>
-      <div className="text-white text-center text-xl font-bold py-4">
+      <div className="text-black text-center text-xl  py-4">
         <Button
-          icon={<UserOutlined />}
           type="text"
           style={{ fontSize: "20px" }}
-          className="!bg-gray-300 !rounded-[50%]"
+          className="!bg-gray-200 !rounded-[50%]"
+          icon={
+            user?.avatarBase64 ? (
+              <Avatar
+                src={`data:image/png;base64,${user.avatarBase64}`}
+                size={40}
+              />
+            ) : (
+              <UserOutlined />
+            )
+          }
         />
+        <div className="text-center mt-2 text-base text-gray-600">
+          {user.firstName} {user.lastName}
+        </div>
         <div className="mt-2 flex justify-center gap-2 hidden xl:flex">
+          <Button
+            icon={<FullscreenToggleButton />}
+            type="text"
+            className="!rounded-[50%]"
+          />
+          <Button
+            icon={<Icon icon="solar:home-2-linear" width="25" height="25" />}
+            type="text"
+            className="!rounded-[50%]"
+          />
           <Popconfirm
             title="آیا مطمئن هستی که می‌خوای خارج بشی؟"
             okText="بله"
             cancelText="خیر"
             onConfirm={onLogout}
           >
-            <Button icon={<LogoutOutlined />} type="text" danger />
+            <Button
+              icon={<Icon icon="lineicons:exit" width="30" height="30" />}
+              type="text"
+              danger
+            />
           </Popconfirm>
-          <Button icon={<EditOutlined />} type="text" className="!text-emerald-500 !rounded-[50%]" />
-          <Button icon={<LockOutlined />} type="text" className="!text-red-400 !rounded-[50%]" />
         </div>
       </div>
+
       <Menu
         theme="light"
         defaultSelectedKeys={["/panel/dashboard"]}

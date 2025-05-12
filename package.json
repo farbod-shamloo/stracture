@@ -16,6 +16,7 @@
     "@types/axios": "^0.9.36",
     "antd": "^5.24.9",
     "axios": "^1.9.0",
+    "font-awesome": "^4.7.0",
     "framer-motion": "^12.10.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

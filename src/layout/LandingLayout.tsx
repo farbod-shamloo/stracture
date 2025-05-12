@@ -4,14 +4,41 @@ import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
+
+
+import { useUser} from "../context/userContext"
+import NotificationPopover from "../components/common/Notification";
+
 const { Header, Content, Footer } = Layout;
 
 const LandingLayout: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
 
+
+  const {user} = useUser()
+  
   const showDrawer = () => setVisible(true);
   const closeDrawer = () => setVisible(false);
+
+  // const [user, setUser] = useState(null);
+  
+  //   useEffect(() => {
+  //   fetch("https://gw.tehrantc.com/ssotest/api/v1/User/GetCurrentUser", {
+  //     method: "GET",
+  //     credentials: "include", // برای ارسال کوکی‌ها در درخواست
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error("Not logged in");
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setUser(data.data); // فرض بر اینه که داده‌ها در فیلد `data` قرار دارند
+  //     })
+  //     .catch(() => {
+  //       setUser(null);
+  //     });
+  // }, []);
 
   // برای خودکار رفتن اسپلش بعد از چند ثانیه
   useEffect(() => {
@@ -49,40 +76,52 @@ const LandingLayout: React.FC = () => {
       {!showIntro && (
         <>
           <Header className="bg-transparent flex justify-between items-center px-6 py-4 shadow-lg">
-            <div className="text-white text-2xl font-bold tracking-wider cursor-pointer">لوگو</div>
+            
+      <div className="text-white text-2xl font-bold tracking-wider cursor-pointer">
+        لوگو
+      </div>
 
-            <div className="md:hidden">
-              <Button
-                type="default"
-                icon={<MenuOutlined />}
-                onClick={showDrawer}
-                shape="circle"
-                className="text-white hover:bg-transparent border-white hover:text-white transition duration-300"
-              />
-            </div>
+      <div className="md:hidden">
+        <Button
+          type="default"
+          icon={<MenuOutlined />}
+          onClick={showDrawer}
+          shape="circle"
+          className="text-white hover:bg-transparent border-white hover:text-white transition duration-300"
+        />
+      </div>
 
-            <div className="hidden md:flex items-center gap-6">
-              <Tooltip title="پنل ادمین">
-                <Button
-                  shape="circle"
-                  icon={<UserOutlined />}
-                  href="/panel"
-                  type="default"
-                  className="text-white hover:bg-transparent hover:text-white transition duration-300"
-                />
-              </Tooltip>
+      <div className="hidden md:flex items-center gap-6">
+        <NotificationPopover />
+        <Tooltip title="پنل ادمین">
+          <Button
+            shape="circle"
+            icon={<UserOutlined />}
+             href={`/panel?name=${user.firstName}&role=${user.userName}`}
+            type="default"
+            className="text-white hover:bg-transparent hover:text-white transition duration-300"
+          />
+        </Tooltip>
 
-              <Button
-                type="primary"
-                icon={<LoginOutlined />}
-                href="/login"
-                className="bg-pink-500 hover:bg-pink-600 text-white transition duration-300"
-              >
-                ثبت نام \ ورود
-              </Button>
-            </div>
-          </Header>
-
+        {user ? (
+          <span className="text-white">
+            {user.firstName} {user.lastName} - {user.userName} 
+          </span>
+        ) : (
+          <Button
+            type="primary"
+            icon={<LoginOutlined />}
+            onClick={() =>
+              window.location.href =
+                "https://sina-test.tehrantc.com/dargah/user/sign-in"
+            }
+            className="bg-pink-500 hover:bg-pink-600 text-white transition duration-300"
+          >
+            ثبت نام \ ورود
+          </Button>
+        )}
+      </div>
+    </Header>
           <Drawer
             title="منو"
             placement="right"
@@ -118,6 +157,7 @@ const LandingLayout: React.FC = () => {
 
           <Content className="p-10 text-center text-white">
             <Outlet />
+            
           </Content>
 
           <Footer className="text-center py-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
