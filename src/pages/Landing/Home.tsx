@@ -11,10 +11,6 @@ function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10">
       <Title className="text-4xl font-extrabold mb-4 text-center">
-        <i
-          className="fas fa-user-shield"
-          style={{ fontSize: "40px", color: "darkgreen" }}
-        ></i>
         به سایت ما خوش آمدید
       </Title>
       <Paragraph className="text-lg mb-8 opacity-80 text-center max-w-2xl">
@@ -30,8 +26,7 @@ function Home() {
       >
         شروع کن
       </Button>
-<i className="fal fa-bell"></i>
-
+      {/* <span className="fal fa-heart"></span> */}
       {/* کارت‌های ویژگی‌ها */}
       <Row gutter={[16, 16]} className="w-full md:w-2/3">
         <Col xs={24} sm={12} md={8}>

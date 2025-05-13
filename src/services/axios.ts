@@ -1,5 +1,4 @@
-import axios from 'axios';
-
+import axios from "axios";
 
 const API_URL = import.meta.env.VITE_APP_API;
 const DARGAH_URL = import.meta.env.VITE_APP_DARGAH;
@@ -10,10 +9,9 @@ const api = axios.create({
   withCredentials: true,
 });
 
-
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,7 +20,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -30,7 +27,7 @@ api.interceptors.response.use(
     const message =
       error?.response?.data?.message ||
       error?.response?.data?.error ||
-      'خطایی رخ داده است';
+      "خطایی رخ داده است";
 
     switch (status) {
       case 401:
@@ -38,19 +35,23 @@ api.interceptors.response.use(
         break;
 
       case 403:
-        window.location.href = '/error?errorCode=403';
+        window.location.href = "/error?errorCode=403";
         break;
 
       case 500:
-        window.location.href = '/error?errorCode=500';
+        window.location.href = "/error?errorCode=500";
+        break;
+
+      case 503:
+        window.location.href = "/error?errorCode=503";
         break;
 
       case 404:
-        window.location.href = '/*';
+        window.location.href = "/*";
         break;
 
       default:
-        console.error('Unhandled error:', status, message);
+        console.error("Unhandled error:", status, message);
         break;
     }
 

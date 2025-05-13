@@ -1,109 +1,58 @@
-// components/users/UserTable.tsx
-import { Table, Tag } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
-import { useState } from 'react'
-import SearchBar from './SearchBar'
-import UserActions from './UserActions'
-import UserTag from './UserTag'
-import FilterTags from './FilterTags'
+import React, { useEffect, useState } from "react";
+import TableHeader from "./TableHeader";
+import TableBody from "./TableBody";
+import api from "../../../services/axios";
 
-interface User {
-  key: number
-  firstName: string
-  lastName: string
-  username: string
-  phone: string
-  status: 'فعال' | 'غیرفعال'
-  twoStep: 'فعال' | 'غیرفعال'
-  type: 'مدیر' | 'پشتیبان'
-}
+const UserTable: React.FC = () => {
+  const [data, setData] = useState<any[]>([]); // مقداردهی اولیه به صورت آرایه
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-const initialData: User[] = [
-  {
-    key: 1,
-    firstName: 'رضا',
-    lastName: 'رستمی',
-    username: '721***',
-    phone: '0912***',
-    status: 'فعال',
-    twoStep: 'غیرفعال',
-    type: 'مدیر',
-  },
-  {
-    key: 2,
-    firstName: 'رضا',
-    lastName: 'رستمی',
-    username: '721***',
-    phone: '0912***',
-    status: 'فعال',
-    twoStep: 'غیرفعال',
-    type: 'مدیر',
-  },
-  {
-    key: 3,
-    firstName: 'رضا',
-    lastName: 'رستمی',
-    username: '721***',
-    phone: '0912***',
-    status: 'فعال',
-    twoStep: 'غیرفعال',
-    type: 'مدیر',
-  },
-  // بقیه دیتا...
-]
-
-const UserTable = () => {
-  const [data, setData] = useState<User[]>(initialData)
-  const [filters, setFilters] = useState<{ key: string; label: string }[]>([])
-
-  const handleRemoveFilter = (key: string) => {
-    setFilters(prev => prev.filter(f => f.key !== key))
-    // اینجا دیتا رو مجدد فیلتر کن
-  }
-  const columns: ColumnsType<User> = [
-    {
-      title: 'ردیف',
-      dataIndex: 'key',
-      key: 'key',
-    },
-    {
-      title: 'نام و نام خانوادگی',
-      render: (_, record) => `${record.firstName} ${record.lastName}`,
-    },
-    {
-      title: 'کد ملی',
-      dataIndex: 'username',
-    },
-    {
-      title: 'تلفن',
-      dataIndex: 'phone',
-    },
-    {
-      title: 'وضعیت کاربر',
-      render: (_, record) => <UserTag type="status" value={record.status} />,
-    },
-    {
-      title: 'ورود دو مرحله‌ای',
-      render: (_, record) => <UserTag type="twoStep" value={record.twoStep} />,
-    },
-    {
-      title: 'نوع کاربر',
-      render: (_, record) => <UserTag type="type" value={record.type} />,
-    },
-    {
-      title: 'عملیات',
-      render: (_, record) => <UserActions user={record} />,
-    },
+  // ستون‌ها با استفاده از `key` و `label`
+  const columns = [
+    { key: "fullName", label: "نام و نام خانوادگی" },
+    { key: "nationalCode", label: "کد ملی" },
+    { key: "userName", label: "نام کاربری" },
+    { key: "status", label: "وضعیت کاربران" },
+    { key: "twoFactorEnabled", label: "ورود دو مرحله ای" },
+    { key: "type", label: "نوع کاربر" },
+    { key: "type", label: "نوع کاربر" },
   ];
-  
+
+  useEffect(() => {
+    api
+      .get("/v1/User/GetAllByFilter")
+      .then((res) => {
+        const items = res?.data?.data?.items;
+        if (Array.isArray(items)) {
+          setData(items);
+        } else {
+          setError("داده‌ها به درستی بارگذاری نشدند.");
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("خطا در دریافت اطلاعات");
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>در حال بارگذاری...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <>
-      <SearchBar setFilters={setFilters} />
-      <FilterTags filters={filters} onRemove={handleRemoveFilter} />
-      <Table className="custom-user-table" columns={columns} dataSource={data} pagination={{ pageSize: 5 }}  rowClassName={(_, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')} />
-    </>
-  )
-}
+    <div className="overflow-x-auto rounded-[10px]">
+      {data.length === 0 ? (
+        <p className="p-4 text-gray-500">داده‌ای یافت نشد.</p>
+      ) : (
+        <table className="min-w-full divide-y divide-gray-200">
+          <TableHeader columns={columns} />
+          <TableBody columns={columns} data={data} />
+        </table>
+      )}
+    </div>
+  );
+};
 
-export default UserTable
+export default UserTable;

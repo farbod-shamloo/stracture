@@ -1,0 +1,98 @@
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 100;
+  src: url("woff/IRANYekanXFaNum-Thin.woff") format("woff"),
+    url("woff2/IRANYekanXFaNum-Thin.woff2") format("woff2"),
+    url("ttf/IRANYekanXFaNum-Thin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 200;
+  src: url("woff/IRANYekanXFaNum-UltraLight.woff") format("woff"),
+    url("woff2/IRANYekanXFaNum-UltraLight.woff2") format("woff2"),
+    url("ttf/IRANYekanXFaNum-UltraLight.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 300;
+  src: url("woff/IRANYekanXFaNum-Light.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-Light.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 500;
+  src: url("woff/IRANYekanXFaNum-Medium.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-Medium.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 600;
+  src: url("woff/IRANYekanXFaNum-DemiBold.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-DemiBold.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-DemiBold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 800;
+  src: url("woff/IRANYekanXFaNum-ExtraBold.woff") format("woff"),
+    url("woff2/IRANYekanXFaNum-ExtraBold.woff2") format("woff2")
+      url("ttf/IRANYekanXFaNum-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 900;
+  src: url("woff/IRANYekanXFaNum-Black.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-Black.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-Black.woff2") format("woff2");
+}
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 950;
+  src: url("woff/IRANYekanXFaNum-ExtraBlack.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-ExtraBlack.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-ExtraBlack.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: 1000;
+  src: url("woff/IRANYekanXFaNum-Heavy.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-Heavy.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-Heavy.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: bold;
+  src: url("woff/IRANYekanXFaNum-Bold.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-Bold.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANYekanXFaNum;
+  font-style: normal;
+  font-weight: normal;
+  src: url("woff/IRANYekanXFaNum-Regular.woff") format("woff"),
+    url("ttf/IRANYekanXFaNum-Regular.ttf") format("truetype"),
+    url("woff2/IRANYekanXFaNum-Regular.woff2") format("woff2");
+}
+

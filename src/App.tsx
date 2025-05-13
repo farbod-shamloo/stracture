@@ -5,13 +5,16 @@ import router from "./routes/router";
 import getCurrentUsers from "./services/user";
 import { UserProvider } from "./context/userContext";
 
+import fa_IR from 'antd/es/locale/fa_IR';
+
+
 const App = () => {
   useEffect(() => {
     getCurrentUsers();
   }, []);
 
   return (
-    <ConfigProvider>
+    <ConfigProvider locale={fa_IR}>
       <UserProvider>
         <RouterProvider router={router} />
       </UserProvider>

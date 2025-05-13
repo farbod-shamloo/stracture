@@ -5,6 +5,9 @@ interface User {
   lastName: string;
   userName: string;
   avatarBase64: string,
+  nationalCode: number,
+  twoFactorEnabled: boolean,
+  type: boolean
   // هر چیزی که از API میاد اینجا تعریف کن
 }
 

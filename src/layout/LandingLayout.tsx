@@ -76,7 +76,7 @@ const LandingLayout: React.FC = () => {
       {!showIntro && (
         <>
           <Header className="bg-transparent flex justify-between items-center px-6 py-4 shadow-lg">
-            
+
       <div className="text-white text-2xl font-bold tracking-wider cursor-pointer">
         لوگو
       </div>
@@ -97,7 +97,7 @@ const LandingLayout: React.FC = () => {
           <Button
             shape="circle"
             icon={<UserOutlined />}
-             href={`/panel?name=${user.firstName}&role=${user.userName}`}
+             href={`/panel?name=${user.firstName}&username=${user.userName}`}
             type="default"
             className="text-white hover:bg-transparent hover:text-white transition duration-300"
           />
