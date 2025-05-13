@@ -24,9 +24,9 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("کاربران", "/panel/users", <UserOutlined />),
-  getItem("سفارشات", "/panel/orders", <DesktopOutlined />),
-  getItem("تیم", "/panel/team", <TeamOutlined />),
-  getItem("کاربران", "/panel/dashboard", <UserOutlined />),
+  getItem("سامانه‌ها", "/panel/samane", <UserOutlined />),
+  getItem("نشست‌ها", "/panel/orders", <DesktopOutlined />),
+  getItem("فعالیت‌کاربران", "/panel/team", <TeamOutlined />),
   getItem("فایل‌ها", "/panel/files", <FileOutlined />),
 ];
 
