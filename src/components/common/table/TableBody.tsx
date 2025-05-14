@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Actions from "./Actions";
 
 type TableBodyProps = {
@@ -5,74 +6,121 @@ type TableBodyProps = {
   columns: { key: string; label: string }[];
 };
 
-const TableBody: React.FC<TableBodyProps> = ({ data, columns }) => {
+const TableBody: React.FC<TableBodyProps> = ({ data, columns, onDelete }) => {
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+
+  const toggleExpand = (index: number) => {
+    setExpandedRow(prev => (prev === index ? null : index));
+  };
+
+const handleDelete = (item) => {
+  const confirmDelete = window.confirm(`آیا مطمئن هستید که می‌خواهید کاربر ${item.firstName} ${item.lastName} را حذف کنید؟`);
+  
+  if (confirmDelete) {
+    console.log("User deleted:", item);
+    onDelete(item); // حذف کاربر
+  } else {
+    console.log("Delete canceled");
+  }
+};
+
+
+  const renderCellContent = (colKey, item) => {
+    const statusBadge = (text: string, color: string) => {
+      const colorMap: Record<string, string> = {
+        green: "bg-green-100 text-green-600",
+        red: "bg-red-100 text-red-600",
+        blue: "bg-blue-100 text-blue-600",
+        orange: "bg-orange-100 text-orange-600",
+      };
+
+      return (
+        <span className={`px-3 py-1 rounded-[5px] text-xs font-semibold ${colorMap[color]}`}>
+          {text}
+        </span>
+      );
+    };
+
+    switch (colKey) {
+      case "fullName":
+        return `${item.firstName} ${item.lastName}`;
+      case "status":
+        return item.status === 1
+          ? statusBadge("فعال", "green")
+          : statusBadge("غیرفعال", "red");
+      case "type":
+        return item.type === 0
+          ? statusBadge("کاربر سازمانی", "blue")
+          : statusBadge("شهروند", "orange");
+      case "twoFactorEnabled":
+        return item.twoFactorEnabled
+          ? statusBadge("فعال", "green")
+          : statusBadge("غیرفعال", "red");
+      case "actions":
+        return <Actions data={data} item={item} onDelete={handleDelete}/>;
+      default:
+        return item[colKey];
+    }
+  };
+
   return (
-    <tbody className="bg-white divide-y divide-gray-200 ">
+    <tbody className="bg-white divide-y divide-gray-200">
       {data.length === 0 ? (
-        <tr className="">
-          <td
-            colSpan={columns.length + 1}
-            className="text-center py-4 text-gray-500"
-          >
+        <tr>
+          <td colSpan={columns.length + 1} className="text-center py-4 text-gray-500">
             داده‌ای یافت نشد.
           </td>
         </tr>
       ) : (
         data.map((item, index) => (
-          <tr className="even:bg-gray-50 border-0" key={item.id || index}>
-            {/* ستون شماره ردیف */}
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-              {index + 1}
-            </td>
-
-            {/* ستون‌های دیتا */}
-            {columns.map((col) => (
-              <td
-                key={col.key || col.label}
-                className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center 
-                  ${col.key === "actions" ? "sticky left-0 bg-white z-10" : ""}`}
-                
-              >
-                {col.key === "fullName" ? (
-                  `${item.firstName} ${item.lastName}`
-                ) : col.key === "status" ? (
-                  item.status === 1 ? (
-                    <span className="px-3 py-1 rounded-[5px]  text-xs font-semibold bg-green-100 text-green-600">
-                      فعال
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-[5px] text-xs font-semibold bg-red-100 text-red-600">
-                      غیرفعال
-                    </span>
-                  )
-                ) : col.key === "type" ? (
-                  item.type === 0 ? (
-                    <span className="px-3 py-1 rounded-[5px] text-xs font-semibold bg-blue-100 text-blue-600">
-                      کاربر سازمانی
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-[5px] text-xs font-semibold bg-orange-100 text-orange-600">
-                      شهروند
-                    </span>
-                  )
-                ) : col.key === "twoFactorEnabled" ? (
-                  item.twoFactorEnabled ? (
-                    <span className="px-3 py-1 rounded-[5px] text-xs font-semibold bg-green-100 text-green-600">
-                      فعال
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 rounded-[5px] text-xs font-semibold bg-red-100 text-red-600">
-                      غیرفعال
-                    </span>
-                  )
-                ) : col.key === "actions" ? (
-                  <Actions item={item} />
-                ) : (
-                  item[col.key]
-                )}
+          <>
+            <tr className="even:bg-gray-50 border-0" key={item.id || index}>
+              <td className="px-6 py-4 text-sm text-gray-500 text-center flex items-center justify-center gap-2 relative">
+               
+                <button
+                  onClick={() => toggleExpand(index)}
+                  className="transition-transform duration-200 focus:outline-none absolute right-2 top-1/2 -translate-y-1/2"
+                >
+                  <span
+                    className={`inline-block transform  ${
+                      expandedRow === index ? "rotate-90" : ""
+                    }`}
+                  >
+                    ❯
+                  </span>
+                </button>
+                <span>{index + 1}</span>
               </td>
-            ))}
-          </tr>
+
+              {columns.map((col) => (
+                <td
+                  key={col.key || col.label}
+                  className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center 
+                    ${col.key === "actions" ? "sticky left-0 bg-white z-10" : ""}`}
+                >
+                  {renderCellContent(col.key, item)}
+                </td>
+              ))}
+            </tr>
+
+            {expandedRow === index && (
+              <tr className="bg-gray-50">
+                <td colSpan={columns.length + 1} className="px-6 py-6 text-sm text-gray-700">
+                  <div className="text-right space-y-1">
+                    <p> جنسیت: {item.gender}</p>
+                    <p> نام پدر: {item.fatherName}</p>
+                    <p> تاریخ تولد: {item.birthDate}</p>
+                    <p> کدملی: {item.nationalCode}</p>
+                    <p> کد پرسنلی: {item.personelCode}</p>
+                    <p>  موبایل: {item.mobile}</p>
+                    <p>  ایمیل: {item.email}</p>
+                    <p>  تعداد دسترسی: {item.permissionCount}</p>
+                    <p>  سمت ها: {item.email}</p>
+                  </div>
+                </td>
+              </tr>
+            )}
+          </>
         ))
       )}
     </tbody>

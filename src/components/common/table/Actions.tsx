@@ -1,6 +1,7 @@
 import React from 'react'
 
-function Actions({item}) {
+function Actions({item, onDelete, data}) {
+  
   return (
     <div className="text-[22px] flex justify-center items-center gap-4">
   <div className="relative group">
@@ -40,7 +41,7 @@ function Actions({item}) {
   </div>
 
   <div className="relative group">
-    <button onClick={() => console.log("Delete", item)}>
+    <button onClick={() => onDelete?.(item)}>
       <i className="fa-light fa-trash-can text-red-500"></i>
     </button>
     <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">

@@ -10,7 +10,7 @@
   
 
 /* اعمال فونت به کل پروژه */
-body, button, input, textarea {
+body, button, input, textarea, span {
   font-family: 'IRANYekanXFaNum', sans-serif;
   direction: rtl;
 }
@@ -29,32 +29,3 @@ body, button, input, textarea {
   color: #f1f5f9; /* آبی روشن یا سفید */
 }
 
-
-.ant-table-thead > tr > th {
-  text-align: center !important;
-}
-
-/* سلول‌های بدنه جدول */
-.ant-table-tbody > tr > td {
-  text-align: center !important;
-}
-
-/* حذف تمام خطوط تقسیم جدول */
-.ant-table-wrapper .ant-table-cell {
-  border: none !important;
-  border-inline-start: none !important;
-  box-shadow: none !important;
-}
-
-.custom-table .ant-table-thead > tr > th {
-  background-color: #e3e5e9; /* رنگ پس‌زمینه هدر */
-  color: #000; /* رنگ متن هدر */
- font-weight: 500;
- font-family: 'IRANYekanXFaNum';
-
-}
-
-
-.ant-tag {
-  font-family: 'IRANYekanXFaNum', sans-serif !important;
-}

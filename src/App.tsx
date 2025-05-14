@@ -7,6 +7,8 @@ import { UserProvider } from "./context/userContext";
 
 import fa_IR from 'antd/es/locale/fa_IR';
 
+import "./index.css"
+
 
 const App = () => {
   useEffect(() => {
@@ -14,7 +16,9 @@ const App = () => {
   }, []);
 
   return (
-    <ConfigProvider locale={fa_IR}>
+    <ConfigProvider locale={fa_IR}
+    theme={{ token: { fontFamily: "IRANYekanXFaNum" } }}
+    >
       <UserProvider>
         <RouterProvider router={router} />
       </UserProvider>
