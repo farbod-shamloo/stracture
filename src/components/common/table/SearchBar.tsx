@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
+import Filter from "./Filter";
 
 interface Props {
   setFilters: (filters: { key: string; label: string }[]) => void;
@@ -42,9 +43,7 @@ const SearchBar = ({ setFilters, data }: Props) => {
         </div>
 
         {/* دکمه فیلتر جدا از اینپوت */}
-        <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition bg-gray-100">
-          <Icon icon="solar:filter-linear" width="24" height="24" />
-        </button>
+       <Filter />
       </div>
 
      <div>
