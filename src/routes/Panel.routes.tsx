@@ -2,9 +2,9 @@ import { lazy } from "react";
 import { withSuspense } from "../components/common/withSuspense";
 
 const PanelLayout = lazy(() => import("../layout/PanelLayout"));
-const Dashboard = lazy(() => import("../pages/panel/Users"));
+const Users = lazy(() => import("../pages/panel/Users"));
 const Orders = lazy(() => import("../pages/Panel/Order/IndexOrders"));
-const Users = lazy(() => import("../pages/panel/Dash"));
+const Dash = lazy(() => import("../pages/panel/Dash"));
 const Team = lazy(() => import("../pages/Panel/Team"));
 const Files = lazy(() => import("../pages/Panel/Files"));
 const ErrorLayout = lazy(() => import("../layout/ErrorLayout")); // اگه lazy نخواستی، می‌تونی مستقیم ایمپورت کنیP
@@ -15,7 +15,7 @@ const panelRoutes = {
   children: [
     {
       path: "users",
-      element: withSuspense(Dashboard),
+      element: withSuspense(Users),
     },
     {
       path: "orders",
@@ -23,7 +23,7 @@ const panelRoutes = {
     },
     {
       path: "users",
-      element: withSuspense(Users),
+      element: withSuspense(Dash),
     },
     {
       path: "team",

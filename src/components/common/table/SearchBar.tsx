@@ -9,9 +9,10 @@ const SearchBar = ({ setFilters, data }: Props) => {
   const [search, setSearch] = useState("");
 
   const handleSearch = () => {
-    if (search.trim()) {
-      setFilters([{ key: "search", label: search }]);
-    }
+    // if (search.trim()) {
+    //   setFilters([{ key: "search", label: search }]);
+    // }
+    console.log("s;lakl;k")
   };
 
   return (
@@ -34,7 +35,7 @@ const SearchBar = ({ setFilters, data }: Props) => {
           {/* دکمه جستجو سمت چپ داخل اینپوت */}
           <button
             onClick={handleSearch}
-            className="absolute left-1 top-1/2 -translate-y-1/2 bg-blue-200 text-blue-900 text-[12px] px-3 py-1 rounded-md hover:bg-blue-600 transition "
+            className="absolute left-1 top-1/2 -translate-y-1/2 bg-blue-200 text-blue-900 text-[12px] px-3 py-1 rounded-md hover:bg-blue-300 transition "
           >
             جستجو
           </button>

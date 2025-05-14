@@ -4,9 +4,11 @@ import Actions from "./Actions";
 type TableBodyProps = {
   data: any[];
   columns: { key: string; label: string }[];
+   currentPage: number;
+  itemsPerPage: number;
 };
 
-const TableBody: React.FC<TableBodyProps> = ({ data, columns, onDelete }) => {
+const TableBody: React.FC<TableBodyProps> = ({ data, columns, onDelete, setData, currentPage, itemsPerPage }) => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   const toggleExpand = (index: number) => {
@@ -20,7 +22,7 @@ const handleDelete = (item) => {
     console.log("User deleted:", item);
     onDelete(item); // حذف کاربر
   } else {
-    console.log("Delete canceled");
+    console.log("Delete canceled");0
   }
 };
 
@@ -89,14 +91,14 @@ const handleDelete = (item) => {
                     ❯
                   </span>
                 </button>
-                <span>{index + 1}</span>
+               <span>{currentPage * itemsPerPage + index + 1}</span>
               </td>
 
               {columns.map((col) => (
                 <td
                   key={col.key || col.label}
                   className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center 
-                    ${col.key === "actions" ? "sticky left-0 bg-white z-10" : ""}`}
+                    ${col.key === "actions" ? "sticky left-0  z-10" : ""}`}
                 >
                   {renderCellContent(col.key, item)}
                 </td>
