@@ -8,6 +8,7 @@ import { UserProvider } from "./context/userContext";
 import fa_IR from 'antd/es/locale/fa_IR';
 
 import "./index.css"
+import { ModalProvider } from "./context/ModalContext";
 
 
 const App = () => {
@@ -19,9 +20,11 @@ const App = () => {
     <ConfigProvider locale={fa_IR}
     theme={{ token: { fontFamily: "IRANYekanXFaNum" } }}
     >
+      <ModalProvider>
       <UserProvider>
         <RouterProvider router={router} />
       </UserProvider>
+      </ModalProvider>
     </ConfigProvider>
   );
 };

@@ -16,7 +16,7 @@ const UserTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentData, setCurrentData] = useState<any[]>([]);
-  const [filters, setFilters] = useState<{ key: string; label: string }[]>([]);
+  const [filters, setFilters] = useState<any[]>([]);
 
   const columns = [
     { key: "fullName", label: "نام و نام خانوادگی" },
@@ -60,10 +60,10 @@ const UserTable: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const source = filters.length > 0 ? filters : data;
     const offset = currentPage * itemsPerPage;
-    const currentData = data.slice(offset, offset + itemsPerPage);
-    setCurrentData(currentData);
-  }, [currentPage, itemsPerPage, data]);
+    setCurrentData(source.slice(offset, offset + itemsPerPage));
+  }, [currentPage, itemsPerPage, data, filters]);
 
   const handlePageClick = (event: { selected: number }) => {
     const newPage = event.selected;
@@ -101,13 +101,14 @@ const UserTable: React.FC = () => {
               columns={columns}
               data={currentData}
               setData={setData}
+              filter={filters}
               onDelete={handleDelete}
             />
           </table>
 
           <div className="flex items-center justify-center mt-7">
             <Pagination
-              data={data}
+              data={filters.length > 0 ? filters : data}
               itemsPerPage={itemsPerPage}
               handlePageClick={handlePageClick}
             />

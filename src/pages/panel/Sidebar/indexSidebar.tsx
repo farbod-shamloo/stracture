@@ -6,11 +6,12 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Menu, Button, Popconfirm, Avatar } from "antd";
+import { Menu, Button, Popconfirm, Avatar, Tooltip } from "antd";
 import type { MenuProps } from "antd";
 import { useUser } from "../../../context/userContext";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import FullscreenToggleButton from "../../../components/common/Fullscreen";
+import { Link, Router } from "react-router-dom";
+
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -59,28 +60,36 @@ const SidebarContent: React.FC<Props> = ({ onMenuClick, onLogout }) => {
           {user.firstName} {user.lastName}
         </div>
         <div className="mt-2 flex justify-center gap-2 hidden xl:flex">
-          <Button
-            icon={<FullscreenToggleButton />}
-            type="text"
-            className="!rounded-[50%]"
-          />
-          <Button
-            icon={<Icon icon="solar:home-2-linear" width="25" height="25" />}
-            type="text"
-            className="!rounded-[50%]"
-          />
-          <Popconfirm
-            title="آیا مطمئن هستی که می‌خوای خارج بشی؟"
-            okText="بله"
-            cancelText="خیر"
-            onConfirm={onLogout}
-          >
-            <Button
-              icon={<Icon icon="lineicons:exit" width="30" height="30" />}
-              type="text"
-              danger
-            />
-          </Popconfirm>
+        <Tooltip title="تمام‌صفحه">
+      <Button
+        icon={<FullscreenToggleButton />}
+        type="text"
+        className="!rounded-[50%]"
+      />
+    </Tooltip>
+         <Tooltip title="بازگشت به درگاه">
+           <Link to="/">
+      <Button
+        icon={<i className="fa-light fa-house text-[18px]"></i>}
+        type="text"
+        className="!rounded-[50%]"
+        />
+        </Link>
+    </Tooltip>
+    <Tooltip title="خروج از حساب کاربری">
+      <Popconfirm
+        title="آیا مطمئن هستی که می‌خوای خارج بشی؟"
+        okText="بله"
+        cancelText="خیر"
+        onConfirm={onLogout}
+      >
+        <Button
+          icon={<i className="fa-light fa-arrow-left-from-bracket text-[18px] text-red-500"></i>}
+          type="text"
+          danger
+        />
+      </Popconfirm>
+    </Tooltip>
         </div>
       </div>
 

@@ -1,48 +1,27 @@
-// Filter.tsx
-import React, { useState } from 'react';
-import { Modal } from 'antd';
-import { Icon } from '@iconify/react/dist/iconify.js';
+import { useModal } from "../../../context/ModalContext";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import  UserFilterForm from "../form/UserFilterForm";
 
-interface FilterProps {
-  title: string;
-  content: React.ReactNode;
-}
 
-const Filter: React.FC<FilterProps> = ({ title, content }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
-    console.log("مدال باز شد"); // برای بررسی اینکه showModal درست کار می‌کند
-    setIsModalOpen(true);
-  };
+const ExampleButton = () => {
+  const { openModal } = useModal();
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleClick = () => {
+    openModal({
+      title: "فیلتر کاربران",
+      content: <UserFilterForm />,
+    });
   };
 
   return (
-    <div>
-      <button
-        className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition bg-gray-100"
-        onClick={showModal}
-      >
-        <Icon icon="solar:filter-linear" width="24" height="24" />
-      </button>
-
-      <Modal
-        title={title}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        {content}
-      </Modal>
-    </div>
+    <button
+            className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition bg-gray-100"
+            onClick={handleClick}
+          >
+            <Icon icon="solar:filter-linear" width="24" height="24" />
+          </button>
   );
 };
 
-export default Filter;
+export default ExampleButton;

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Icon } from "@iconify/react";
 
 const FullscreenToggleButton = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -21,9 +20,9 @@ const FullscreenToggleButton = () => {
       className="!rounded-[50%] p-2 bg-transparent border-none"
     >
       {isFullscreen ? (
-        <Icon icon="icon-park-outline:applet-closed" width="30" height="30" />
+        <i className="fa-light fa-rectangle-xmark text-[20px]"></i>
       ) : (
-        <Icon icon="fluent:square-hint-48-regular" width="30" height="30" />
+        <i className="fa-light fa-square-dashed text-[20px]"></i>
       )}
     </button>
   );
