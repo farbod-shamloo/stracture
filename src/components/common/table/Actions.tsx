@@ -1,6 +1,13 @@
-import React from 'react'
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function Actions({item, onDelete, data}) {
+function Actions({ item, onDelete }) {
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    navigate(`/panel/users/edit/${item.id}`);
+  };
+
   
   return (
     <div className="text-[22px] flex justify-center items-center gap-4">
@@ -32,13 +39,13 @@ function Actions({item, onDelete, data}) {
   </div>
 
   <div className="relative group">
-    <button onClick={() => console.log("Edit", item)}>
-      <i className="fa-light fa-pen-to-square"></i>
-    </button>
-    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-      ویرایش
-    </div>
-  </div>
+        <button onClick={handleEdit}>
+          <i className="fa-light fa-pen-to-square"></i>
+        </button>
+        <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
+          ویرایش
+        </div>
+      </div>
 
   <div className="relative group">
     <button onClick={() => onDelete?.(item)}>

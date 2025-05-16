@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Breadcrumb, theme, Button, Drawer } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import SidebarContent from "../pages/Panel/Sidebar/indexSidebar";
+
+
 
 const { Content, Footer, Sider } = Layout;
 
@@ -14,6 +16,7 @@ const PanelLayout: React.FC = () => {
   const [hideSidebar, setHideSidebar] = useState(false);
   const [selectedKey, setSelectedKey] = useState("/panel/dashboard");
   const navigate = useNavigate();
+
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -79,6 +82,7 @@ const PanelLayout: React.FC = () => {
     <SidebarContent onMenuClick={handleMenuClick} onLogout={handleLogout} />
   );
 
+  
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {!hideSidebar && (
@@ -92,7 +96,8 @@ const PanelLayout: React.FC = () => {
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
-          <div className="flex justify-start items-center mt-4">
+      <div className="flex items-center justify-between px-1.5 py-3">
+      <div className="flex justify-start items-center mt-4">
             {isMobile && (
               <div style={{ padding: "10px 16px" }}>
                 <Button
@@ -109,7 +114,15 @@ const PanelLayout: React.FC = () => {
                 <Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>
               ))}
             </Breadcrumb>
+            
           </div>
+
+          <div>
+            <Link to="/panel/users/add">
+            <button className="bg-blue-600 text-white px-3 py-1 rounded-[5px] mt-2.5 cursor-pointer">ثبت کاربر</button>
+            </Link>
+          </div>
+      </div>
 
           <div
             style={{

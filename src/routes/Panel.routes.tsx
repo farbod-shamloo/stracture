@@ -7,7 +7,8 @@ const Orders = lazy(() => import("../pages/Panel/Order/IndexOrders"));
 const Dash = lazy(() => import("../pages/panel/Dash"));
 const Team = lazy(() => import("../pages/Panel/Team"));
 const Files = lazy(() => import("../pages/Panel/Files"));
-const ErrorLayout = lazy(() => import("../layout/ErrorLayout")); // اگه lazy نخواستی، می‌تونی مستقیم ایمپورت کنیP
+const ErrorLayout = lazy(() => import("../layout/ErrorLayout"));
+const AddEditUser = lazy (() => import("../pages/panel/users/AddEditUser")) // اگه lazy نخواستی، می‌تونی مستقیم ایمپورت کنیP
 const panelRoutes = {
   path: "/panel",
   element: withSuspense(PanelLayout),
@@ -16,6 +17,14 @@ const panelRoutes = {
     {
       path: "users",
       element: withSuspense(Users),
+    },
+    {
+      path: "users/add",
+      element: withSuspense(AddEditUser), // صفحه ثبت کاربر
+    },
+    {
+      path: "users/edit/:id",
+      element: withSuspense(AddEditUser), // صفحه ویرایش کاربر
     },
     {
       path: "orders",
