@@ -66,7 +66,7 @@ const handleDelete = (item) => {
   };
 
   return (
-    <tbody className="bg-white divide-y divide-gray-200">
+    <tbody className="bg-white divide-y divide-gray-200" >
       {data.length === 0 ? (
         <tr>
           <td colSpan={columns.length + 1} className="text-center py-4 text-gray-500">

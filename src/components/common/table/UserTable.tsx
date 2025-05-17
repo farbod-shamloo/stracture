@@ -12,15 +12,14 @@ import FilterUser from "../../../services/FilterUser";
 const UserTable: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState();
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
-  // مقدار سرچ از URL یا خالی
   const [searchKey, setSearchKey] = useState(searchParams.get("search") || "");
 
   useEffect(() => {
     console.log("🔁 URL SearchParams changed:", searchParams.toString());
-
+    setCurrentPage(searchParams.toString());
     const pageFromUrl = parseInt(searchParams.get("page") || "1", 10);
     const perPageFromUrl = parseInt(searchParams.get("perPage") || "5", 10);
     setCurrentPage(pageFromUrl - 1);
@@ -39,18 +38,16 @@ const UserTable: React.FC = () => {
     );
   }, [searchParams]);
 
-  // واکشی داده با React Query
   const { data, error, isLoading } = useQuery({
     queryKey: ["users", searchKey, currentPage, itemsPerPage],
     queryFn: () => FilterUser(searchKey, currentPage + 1, itemsPerPage),
     keepPreviousData: true,
-    staleTime: 5 * 60 * 1000, // 5 دقیقه کش
+    staleTime: 5 * 60 * 1000,
     onError: (err) => {
       console.error(err);
     },
   });
 
-  // صفحه بندی داده‌ها
   const [currentData, setCurrentData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -62,7 +59,6 @@ const UserTable: React.FC = () => {
     console.log(" currentData state updated:", currentData);
   }, [currentData]);
 
-  // تعداد کل داده‌ها
   const totalCount = data?.totalCount || (data?.items?.length ?? 0);
 
   const columns = [
@@ -86,11 +82,9 @@ const UserTable: React.FC = () => {
     console.log("Page clicked:", event.selected);
     const newPage = event.selected;
 
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-      params.set("page", (newPage + 1).toString());
-      return params;
-    });
+    const params = new URLSearchParams(searchParams);
+    params.set("page", (newPage + 1).toString());
+    setSearchParams(params);
   };
 
   const handleItemsPerPageChange = (
