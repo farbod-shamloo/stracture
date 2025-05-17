@@ -13,6 +13,7 @@ function Row({itemsPerPage, handleItemsPerPageChange}) {
               <option value={10}>10 سطر</option>
               <option value={15}>15 سطر</option>
               <option value={20}>20 سطر</option>
+              <option value={25}>25 سطر</option>
             </select>
           </div>
   )

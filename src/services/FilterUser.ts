@@ -1,15 +1,17 @@
 // services/getCurrentUsers.ts
 import api from "./axios";
 
-const FilterUser = async (searchKey: string = "") => {
+const FilterUser = async (searchKey = "", page = 1, pageSize = 21) => {
   try {
     const res = await api.get("/v1/User/GetAllByFilter", {
       params: {
         search: searchKey,
+        page,
+        pageSize,
       },
     });
     if (res.data.isSuccess) {
-      return res.data.data; // فقط قسمت data شامل items و pagination
+      return res.data.data; // انتظار میره data شامل items و pagination باشه
     } else {
       return null;
     }
@@ -18,6 +20,7 @@ const FilterUser = async (searchKey: string = "") => {
     return null;
   }
 };
+
 
 
 export default FilterUser;

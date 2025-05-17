@@ -22,7 +22,7 @@ const handleDelete = (item) => {
     console.log("User deleted:", item);
     onDelete(item); // حذف کاربر
   } else {
-    console.log("Delete canceled");0
+    console.log("Delete canceled");
   }
 };
 

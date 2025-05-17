@@ -1,62 +1,55 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+const actionsConfig = [
+  {
+    icon: "fa-shield-keyhole",
+    title: "دسترسی‌ها",
+    onClick: (item) => console.log("Access", item),
+  },
+  {
+    icon: "fa-lock",
+    title: "قفل کردن",
+    onClick: (item) => console.log("Lock", item),
+  },
+  {
+    icon: "fa-arrow-right-to-bracket",
+    title: "ورود به حساب",
+    onClick: (item) => console.log("Login", item),
+  },
+  {
+    icon: "fa-pen-to-square",
+    title: "ویرایش",
+    onClick: (item, navigate) => navigate(`/panel/users/edit/${item.id}`),
+  },
+  {
+    icon: "fa-trash-can",
+    title: "حذف",
+    className: "text-red-500",
+    onClick: (item, navigate, onDelete) => onDelete?.(item),
+  },
+];
+
 function Actions({ item, onDelete }) {
   const navigate = useNavigate();
 
-  const handleEdit = () => {
-    navigate(`/panel/users/edit/${item.id}`);
-  };
-
-  
   return (
     <div className="text-[22px] flex justify-center items-center gap-4">
-  <div className="relative group">
-    <button onClick={() => console.log("Access", item)}>
-      <i className="fa-light fa-shield-keyhole"></i>
-    </button>
-    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-      دسترسی‌ها
-    </div>
-  </div>
-
-  <div className="relative group">
-    <button onClick={() => console.log("Lock", item)}>
-      <i className="fa-light fa-lock"></i>
-    </button>
-    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-      قفل کردن
-    </div>
-  </div>
-
-  <div className="relative group">
-    <button onClick={() => console.log("Login", item)}>
-      <i className="fa-light fa-arrow-right-to-bracket"></i>
-    </button>
-    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-      ورود به حساب
-    </div>
-  </div>
-
-  <div className="relative group">
-        <button onClick={handleEdit}>
-          <i className="fa-light fa-pen-to-square"></i>
-        </button>
-        <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-          ویرایش
+      {actionsConfig.map(({ icon, title, onClick, className }, index) => (
+        <div key={index} className="relative group">
+          <button
+            onClick={() => onClick(item, navigate, onDelete)}
+            className={className}
+          >
+            <i className={`fa-light ${icon}`}></i>
+          </button>
+          <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
+            {title}
+          </div>
         </div>
-      </div>
-
-  <div className="relative group">
-    <button onClick={() => onDelete?.(item)}>
-      <i className="fa-light fa-trash-can text-red-500"></i>
-    </button>
-    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-      حذف
+      ))}
     </div>
-  </div>
-</div>
-  )
+  );
 }
 
-export default Actions
+export default Actions;
