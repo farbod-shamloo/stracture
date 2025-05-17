@@ -31,7 +31,7 @@ const panelRoutes = {
       element: withSuspense(Orders),
     },
     {
-      path: "users",
+      path: "dash",
       element: withSuspense(Dash),
     },
     {
