@@ -5,8 +5,6 @@ import { UserOutlined } from "@ant-design/icons";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import SidebarContent from "../pages/Panel/Sidebar/indexSidebar";
 
-
-
 const { Content, Footer, Sider } = Layout;
 
 const PanelLayout: React.FC = () => {
@@ -17,12 +15,10 @@ const PanelLayout: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState("/panel/dashboard");
   const navigate = useNavigate();
 
-
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  
   useEffect(() => {
     const storedKey = localStorage.getItem("selectedKey");
     if (storedKey) setSelectedKey(storedKey);
@@ -82,7 +78,6 @@ const PanelLayout: React.FC = () => {
     <SidebarContent onMenuClick={handleMenuClick} onLogout={handleLogout} />
   );
 
-  
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {!hideSidebar && (
@@ -90,39 +85,48 @@ const PanelLayout: React.FC = () => {
           {sidebar}
         </Sider>
       )}
-      <Drawer title="منو" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+      <Drawer
+        title="منو"
+        placement="right"
+        onClose={() => setShowDrawer(false)}
+        open={showDrawer}
+      >
         {sidebar}
       </Drawer>
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
-      <div className="flex items-center justify-between px-1.5 py-3">
-      <div className="flex justify-start items-center mt-4">
-            {isMobile && (
-              <div style={{ padding: "10px 16px" }}>
-                <Button
-                  icon={<UserOutlined />}
-                  type="text"
-                  onClick={() => setShowDrawer(true)}
-                  style={{ fontSize: "20px" }}
-                  className="!bg-gray-300 !rounded-[50%]"
-                />
-              </div>
-            )}
-            <Breadcrumb>
-              {getBreadcrumb().map((item, index) => (
-                <Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>
-              ))}
-            </Breadcrumb>
-            
+          <div className="flex items-center justify-between px-1.5 py-3">
+            <div className="flex justify-start items-center mt-4">
+              {isMobile && (
+                <div style={{ padding: "10px 16px" }}>
+                  <Button
+                    icon={<UserOutlined />}
+                    type="text"
+                    onClick={() => setShowDrawer(true)}
+                    style={{ fontSize: "20px" }}
+                    className="!bg-gray-300 !rounded-[50%]"
+                  />
+                </div>
+              )}
+              <Breadcrumb>
+                {getBreadcrumb().map((item, index) => (
+                  <Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>
+                ))}
+              </Breadcrumb>
+            </div>
+            <div>
+              <Link to="/panel/users/add" className="inline-block">
+                <button className="flex items-center gap-2 bg-[#0d56a3] text-white px-3 py-2 rounded-[5px] mt-2.5 cursor-pointer">
+                  <i
+                    className="fa-solid fa-user-plus"
+                    title="ثبت کاربر جدید"
+                  ></i>
+                  کاربر جدید
+                </button>
+              </Link>
+            </div>
           </div>
-
-          {/* <div>
-            <Link to="/panel/users/add">
-            <button className="bg-blue-600 text-white px-3 py-1 rounded-[5px] mt-2.5 cursor-pointer">ثبت کاربر</button>
-            </Link>
-          </div> */}
-      </div>
 
           <div
             style={{
@@ -137,7 +141,9 @@ const PanelLayout: React.FC = () => {
           </div>
         </Content>
 
-        <Footer style={{ textAlign: "center" }}>ساخته شده با ❤️ توسط فربد</Footer>
+        <Footer style={{ textAlign: "center" }}>
+          ساخته شده با ❤️ توسط فربد
+        </Footer>
       </Layout>
     </Layout>
   );
