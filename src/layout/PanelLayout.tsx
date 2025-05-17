@@ -117,11 +117,11 @@ const PanelLayout: React.FC = () => {
             
           </div>
 
-          <div>
+          {/* <div>
             <Link to="/panel/users/add">
             <button className="bg-blue-600 text-white px-3 py-1 rounded-[5px] mt-2.5 cursor-pointer">ثبت کاربر</button>
             </Link>
-          </div>
+          </div> */}
       </div>
 
           <div

@@ -6,17 +6,21 @@ import api from "../../../services/axios";
 import Pagination from "./Pagination";
 import Row from "./Row";
 import SearchBar from "./SearchBar";
+import FilterUser from "../../../services/FilterUser";
 
 const UserTable: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentData, setCurrentData] = useState<any[]>([]);
-  const [filters, setFilters] = useState<any[]>([]);
+
+  // مقدار سرچ از URL میاد یا خالی
+  const [searchKey, setSearchKey] = useState(searchParams.get("search") || "");
 
   const columns = [
     { key: "fullName", label: "نام و نام خانوادگی" },
@@ -29,58 +33,90 @@ const UserTable: React.FC = () => {
   ];
 
   useEffect(() => {
+    // وقتی پارامترهای صفحه یا تعداد آیتم تغییر کرد، stateها رو بروز کن
     const pageFromUrl = parseInt(searchParams.get("page") || "1", 10);
     const perPageFromUrl = parseInt(searchParams.get("perPage") || "5", 10);
     setCurrentPage(pageFromUrl - 1);
     setItemsPerPage(perPageFromUrl);
+
+    // مقدار سرچ از URL رو هم بروز کن
+    const urlSearch = searchParams.get("search") || "";
+    setSearchKey(urlSearch);
   }, [searchParams]);
 
-  const handleDelete = (itemToDelete) => {
-    const updatedData = data.filter((item) => item.id !== itemToDelete.id);
-    setData(updatedData);
-  };
-
   useEffect(() => {
-    api
-      .get("/v1/User/GetAllByFilter")
-      .then((res) => {
-        const items = res?.data?.data?.items;
-        if (Array.isArray(items)) {
-          setData(items);
-        } else {
-          setError("داده‌ها به درستی بارگذاری نشدند.");
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("خطا در دریافت اطلاعات");
-        setLoading(false);
-      });
+    // وقتی مقدار سرچ اولیه لود شد یا تغییر کرد، داده بگیر
+    fetchData(searchKey);
   }, []);
 
+  const fetchData = (search = "") => {
+    setLoading(true);
+    setError(null);
+
+    // به‌روزرسانی مقدار سرچ در state و URL
+    setSearchKey(search);
+    const params = new URLSearchParams(searchParams);
+    if (search) {
+      params.set("search", search);
+    } else {
+      params.delete("search");
+    }
+    setSearchParams(params);
+
+    FilterUser(search)
+      .then((res) => {
+        if (res) {
+          const items = res.items;
+          if (Array.isArray(items)) {
+            setData(items);
+            setFilteredData(items);
+          } else {
+            setError("داده‌ای یافت نشد.");
+          }
+        } else {
+          setError("خطا در دریافت داده از سرور");
+        }
+      })
+      .catch((err) => {
+        console.error("API Error:", err);
+        setError("خطا در دریافت اطلاعات");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  // صفحه‌بندی
   useEffect(() => {
-    const source = filters.length > 0 ? filters : data;
     const offset = currentPage * itemsPerPage;
-    setCurrentData(source.slice(offset, offset + itemsPerPage));
-  }, [currentPage, itemsPerPage, data, filters]);
+    setCurrentData(filteredData.slice(offset, offset + itemsPerPage));
+  }, [filteredData, currentPage, itemsPerPage]);
+
+  const handleDelete = (itemToDelete: any) => {
+    const newData = data.filter((item) => item.id !== itemToDelete.id);
+    setData(newData);
+
+    const newFiltered = filteredData.filter((item) => item.id !== itemToDelete.id);
+    setFilteredData(newFiltered);
+  };
 
   const handlePageClick = (event: { selected: number }) => {
     const newPage = event.selected;
     setCurrentPage(newPage);
-    searchParams.set("page", (newPage + 1).toString());
-    setSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", (newPage + 1).toString());
+    setSearchParams(params);
   };
 
-  const handleItemsPerPageChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newItemsPerPage = Number(event.target.value);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(0);
-    searchParams.set("perPage", newItemsPerPage.toString());
-    searchParams.set("page", "1");
-    setSearchParams(searchParams);
+
+    const params = new URLSearchParams(searchParams);
+    params.set("perPage", newItemsPerPage.toString());
+    params.set("page", "1");
+    setSearchParams(params);
   };
 
   if (loading) return <p>در حال بارگذاری...</p>;
@@ -88,11 +124,12 @@ const UserTable: React.FC = () => {
 
   return (
     <div className="overflow-x-auto rounded-[10px]">
-      {data.length === 0 ? (
+      <SearchBar onSearch={fetchData} searchValue={searchKey} data={filteredData} />
+
+      {filteredData.length === 0 ? (
         <p className="p-4 text-gray-500">داده‌ای یافت نشد.</p>
       ) : (
         <>
-          <SearchBar data={data} setFilters={setFilters} />
           <table className="min-w-full divide-y divide-gray-200">
             <TableHeader columns={columns} />
             <TableBody
@@ -101,22 +138,18 @@ const UserTable: React.FC = () => {
               columns={columns}
               data={currentData}
               setData={setData}
-              filter={filters}
               onDelete={handleDelete}
             />
           </table>
 
           <div className="flex items-center justify-center mt-7">
             <Pagination
-              data={filters.length > 0 ? filters : data}
+              data={filteredData}
               itemsPerPage={itemsPerPage}
               handlePageClick={handlePageClick}
             />
 
-            <Row
-              itemsPerPage={itemsPerPage}
-              handleItemsPerPageChange={handleItemsPerPageChange}
-            />
+            <Row itemsPerPage={itemsPerPage} handleItemsPerPageChange={handleItemsPerPageChange} />
           </div>
         </>
       )}

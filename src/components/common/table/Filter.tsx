@@ -4,7 +4,7 @@ import  UserFilterForm from "../form/UserFilterForm";
 
 
 
-const ExampleButton = () => {
+const Filter = () => {
   const { openModal } = useModal();
 
   const handleClick = () => {
@@ -24,4 +24,4 @@ const ExampleButton = () => {
   );
 };
 
-export default ExampleButton;
+export default Filter;
