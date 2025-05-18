@@ -2,6 +2,7 @@
 import api from "./axios";
 
 const FilterUser = async (searchKey: string, pageIndex: number, pageSize: number, filters) => {
+  console.log("Sent filters:", filters);
   try {
     const res = await api.get("/v1/User/GetAllByFilter", {
       params: {
