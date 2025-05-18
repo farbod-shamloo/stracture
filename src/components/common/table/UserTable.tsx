@@ -16,10 +16,11 @@ const UserTable: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [searchKey, setSearchKey] = useState(searchParams.get("search") || "");
   const [currentData, setCurrentData] = useState<any[]>([]);
- const [filters, setFilters] = useState({
-  Application: "",
+  
+const [filters, setFilters] = useState({
+  application: "",
   userType: "",
-  Role: "",
+  role: "",
   applicationGroup: "",
 });
 
@@ -27,8 +28,6 @@ const UserTable: React.FC = () => {
     const pageFromUrl = parseInt(searchParams.get("page") || "1", 10);
     const perPageFromUrl = parseInt(searchParams.get("perPage") || "5", 10);
     const urlSearch = searchParams.get("search") || "";
-
-
 
     setCurrentPage(pageFromUrl - 1);
     setItemsPerPage(perPageFromUrl);
@@ -40,22 +39,22 @@ const UserTable: React.FC = () => {
       searchKey: urlSearch,
     });
   }, [searchParams]);
-useEffect(() => {
-  const newFilters = {
-    Application: searchParams.get("Application") || "",
-    userType: searchParams.get("userType") || "",
-    Role: searchParams.get("Role") || "",
-    ApplicationGroup: searchParams.get("ApplicationGroup") || "",
-  };
-  setFilters(newFilters);
-  console.log("🎯 فیلترهای جدید:", newFilters);
-}, [searchParams]);
 
+  useEffect(() => {
+  const newFilters = {
+  application: searchParams.get("application") || "",
+  userType: searchParams.get("userType") || "",
+  role: searchParams.get("role") || "",
+  applicationGroup: searchParams.get("applicationGroup") || "",
+};
+    setFilters(newFilters);
+    console.log("🎯 فیلترهای جدید:", newFilters);
+  }, [searchParams]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["users", searchKey, currentPage, itemsPerPage,JSON.stringify(filters) ],
+    queryKey: ["users", searchKey, currentPage, itemsPerPage, JSON.stringify(filters)],
     queryFn: () =>
-      FilterUser(searchKey, (currentPage ?? 0) + 1, itemsPerPage,filters ),
+      FilterUser(searchKey, currentPage + 1, itemsPerPage, filters),
     keepPreviousData: true,
     staleTime: 5 * 60 * 1000,
     onError: (err) => {
@@ -104,26 +103,24 @@ useEffect(() => {
     setSearchParams(params);
   };
 
-const handleFilter = (newFilters: any) => {
-  setFilters(newFilters);
-  setCurrentPage(0);
+  const handleFilter = (newFilters: any) => {
+    setFilters(newFilters);
+    setCurrentPage(0);
 
-  const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
 
-  params.set("page", "1");
+    params.set("page", "1");
 
-  // اضافه کردن همه فیلترها به URL
-  Object.entries(newFilters).forEach(([key, value]) => {
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-  });
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
 
-  setSearchParams(params);
-};
-
+    setSearchParams(params);
+  };
 
   const handleSearch = (search: string) => {
     setSearchKey(search);
