@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Actions from "./Actions";
+import { convertToJalali } from "../../../utils/convertToJalali";
 
 type TableBodyProps = {
   data: any[];
@@ -111,7 +112,7 @@ const handleDelete = (item) => {
                   <div className="text-right space-y-1">
                     <p> جنسیت: {item.gender}</p>
                     <p> نام پدر: {item.fatherName}</p>
-                    <p> تاریخ تولد: {item.birthDate}</p>
+                    <p> تاریخ تولد: {convertToJalali(item.birthDate)}</p>
                     <p> کدملی: {item.nationalCode}</p>
                     <p> کد پرسنلی: {item.personelCode}</p>
                     <p>  موبایل: {item.mobile}</p>

@@ -9,7 +9,7 @@ interface Props {
    totalCount: number;
 }
 
-const SearchBar = ({ onSearch, searchValue, data , totalCount}: Props) => {
+const SearchBar = ({ onSearch,onFilter, searchValue, data , totalCount}: Props) => {
   const [search, setSearch] = useState(searchValue);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -63,7 +63,7 @@ const SearchBar = ({ onSearch, searchValue, data , totalCount}: Props) => {
             جستجو
           </button>
         </div>
-        <Filter />
+        <Filter onFilter={onFilter}/>
       </div>
       <div>
         <span>تعداد کل: {totalCount}</span>

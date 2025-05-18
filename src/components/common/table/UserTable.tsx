@@ -12,35 +12,50 @@ import FilterUser from "../../../services/FilterUser";
 const UserTable: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [currentPage, setCurrentPage] = useState();
+  const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-
   const [searchKey, setSearchKey] = useState(searchParams.get("search") || "");
+  const [currentData, setCurrentData] = useState<any[]>([]);
+ const [filters, setFilters] = useState({
+  Application: "",
+  userType: "",
+  Role: "",
+  applicationGroup: "",
+});
 
   useEffect(() => {
-    console.log("🔁 URL SearchParams changed:", searchParams.toString());
-    setCurrentPage(searchParams.toString());
     const pageFromUrl = parseInt(searchParams.get("page") || "1", 10);
     const perPageFromUrl = parseInt(searchParams.get("perPage") || "5", 10);
+    const urlSearch = searchParams.get("search") || "";
+
+
+
     setCurrentPage(pageFromUrl - 1);
     setItemsPerPage(perPageFromUrl);
-
-    const urlSearch = searchParams.get("search") || "";
     setSearchKey(urlSearch);
 
-    console.log(
-      "   → currentPage:",
-      pageFromUrl - 1,
-      "itemsPerPage:",
-      perPageFromUrl,
-      "searchKey:",
-      urlSearch
-    );
+    console.log("🔁 URL Params Updated:", {
+      currentPage: pageFromUrl - 1,
+      itemsPerPage: perPageFromUrl,
+      searchKey: urlSearch,
+    });
   }, [searchParams]);
+useEffect(() => {
+  const newFilters = {
+    Application: searchParams.get("Application") || "",
+    userType: searchParams.get("userType") || "",
+    Role: searchParams.get("Role") || "",
+    ApplicationGroup: searchParams.get("ApplicationGroup") || "",
+  };
+  setFilters(newFilters);
+  console.log("🎯 فیلترهای جدید:", newFilters);
+}, [searchParams]);
+
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["users", searchKey, currentPage, itemsPerPage],
-    queryFn: () => FilterUser(searchKey, currentPage + 1, itemsPerPage),
+    queryKey: ["users", searchKey, currentPage, itemsPerPage,JSON.stringify(filters) ],
+    queryFn: () =>
+      FilterUser(searchKey, (currentPage ?? 0) + 1, itemsPerPage,filters ),
     keepPreviousData: true,
     staleTime: 5 * 60 * 1000,
     onError: (err) => {
@@ -48,18 +63,11 @@ const UserTable: React.FC = () => {
     },
   });
 
-  const [currentData, setCurrentData] = useState<any[]>([]);
-
   useEffect(() => {
-    console.log(" Received data from query:", data);
     setCurrentData(data?.items || []);
   }, [data]);
 
-  useEffect(() => {
-    console.log(" currentData state updated:", currentData);
-  }, [currentData]);
-
-  const totalCount = data?.totalCount || (data?.items?.length ?? 0);
+  const totalCount = data?.totalCount || currentData.length;
 
   const columns = [
     { key: "fullName", label: "نام و نام خانوادگی" },
@@ -72,16 +80,12 @@ const UserTable: React.FC = () => {
   ];
 
   const handleDelete = (itemToDelete: any) => {
-    console.log(" Deleting item:", itemToDelete);
     const newData = currentData.filter((item) => item.id !== itemToDelete.id);
     setCurrentData(newData);
-    console.log("   → new currentData length:", newData.length);
   };
 
   const handlePageClick = (event: { selected: number }) => {
-    console.log("Page clicked:", event.selected);
     const newPage = event.selected;
-
     const params = new URLSearchParams(searchParams);
     params.set("page", (newPage + 1).toString());
     setSearchParams(params);
@@ -90,7 +94,6 @@ const UserTable: React.FC = () => {
   const handleItemsPerPageChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    console.log(" Items per page changed:", event.target.value);
     const newItemsPerPage = Number(event.target.value);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(0);
@@ -101,8 +104,28 @@ const UserTable: React.FC = () => {
     setSearchParams(params);
   };
 
+const handleFilter = (newFilters: any) => {
+  setFilters(newFilters);
+  setCurrentPage(0);
+
+  const params = new URLSearchParams(searchParams);
+
+  params.set("page", "1");
+
+  // اضافه کردن همه فیلترها به URL
+  Object.entries(newFilters).forEach(([key, value]) => {
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+  });
+
+  setSearchParams(params);
+};
+
+
   const handleSearch = (search: string) => {
-    console.log(" Search key changed:", search);
     setSearchKey(search);
     const params = new URLSearchParams(searchParams);
     if (search) {
@@ -110,12 +133,25 @@ const UserTable: React.FC = () => {
     } else {
       params.delete("search");
     }
-    params.set("page", "1"); // بازگشت به صفحه اول بعد از سرچ جدید
+    params.set("page", "1");
     setSearchParams(params);
   };
 
-  if (isLoading) return <p>در حال بارگذاری...</p>;
-  if (error) return <p>خطا در دریافت اطلاعات</p>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <span className="text-gray-500">در حال بارگذاری اطلاعات...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center py-10 text-red-500">
+        خطا در دریافت اطلاعات
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto rounded-[10px]">
@@ -124,6 +160,7 @@ const UserTable: React.FC = () => {
         searchValue={searchKey}
         data={currentData}
         totalCount={totalCount}
+        onFilter={handleFilter}
       />
 
       {currentData.length === 0 ? (

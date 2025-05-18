@@ -3,59 +3,79 @@ import Application from "../../../services/Application";
 import Role from "../../../services/Role";
 import ApplicationGroup from "../../../services/ApplicationGroup";
 
-const UserFilterForm = ({ onSubmit }: { onSubmit: (formData: any) => void }) => {
+import { useModal } from "../../../context/ModalContext";
+
+
+const UserFilterForm = ({
+  onFilter,
+ 
+}: {
+  onFilter: (formData: any) => void;
+  onClose: () => void;
+}) => {
   const [formData, setFormData] = useState({
-    system: "",
+    Application: "",
     systemSearch: "",
     userType: "",
-    role: "",
+    Role: "",
     roleSearch: "",
-    systemGroup: "",
+    SystemGroup: "",
     systemGroupSearch: "",
     subSystemGroup: "",
     subSystemGroupSearch: "",
     organization: "",
     geoStructure: "",
     orgChart: "",
-    applicationGroup: "",
+    ApplicationGroup: "",
   });
 
   const [applications, setApplications] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
   const [applicationGroups, setApplicationGroups] = useState<any[]>([]);
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const apps = await Application();
         if (apps?.data?.items) setApplications(apps.data.items);
-
+        
         const rolesData = await Role();
         if (rolesData?.data?.items) setRoles(rolesData.data.items);
-
+        
         const applicationGroupsData = await ApplicationGroup();
         if (applicationGroupsData?.data?.items) {
           setApplicationGroups(applicationGroupsData.data.items);
         }
-
+        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
+    
     fetchData();
   }, []);
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    const filterData = {
+      userType: formData.userType,
+      Role: formData.Role,
+      Application: formData.Application,
+      ApplicationGroup: formData.ApplicationGroup,
+    };
+    
+    onFilter(filterData);
+    closeModal();
+    
   };
-
+  const { closeModal } = useModal();
   return (
     <form onSubmit={handleSubmit} className="space-y-4 text-[14px]">
       {/* سامانه */}
@@ -129,29 +149,13 @@ const UserFilterForm = ({ onSubmit }: { onSubmit: (formData: any) => void }) => 
 
       {/* دکمه‌ها */}
       <div className="flex gap-1 justify-end pt-3">
-        <button
-          type="button"
-          className="bg-gray-200 text-black px-4 py-2 rounded w-100px"
-          onClick={() =>
-            setFormData({
-              system: "",
-              systemSearch: "",
-              userType: "",
-              role: "",
-              roleSearch: "",
-              systemGroup: "",
-              systemGroupSearch: "",
-              subSystemGroup: "",
-              subSystemGroupSearch: "",
-              organization: "",
-              geoStructure: "",
-              orgChart: "",
-              applicationGroup: "",
-            })
-          }
-        >
-          انصراف
-        </button>
+     <button
+  type="button"
+  className="bg-gray-200 text-black px-4 py-2 rounded w-100px"
+  onClick={closeModal}
+>
+  انصراف
+</button>
         <button
           type="submit"
           className="bg-blue-800 text-white px-4 py-2 rounded w-[180px]"

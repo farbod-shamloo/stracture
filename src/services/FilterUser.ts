@@ -1,13 +1,14 @@
 // services/getCurrentUsers.ts
 import api from "./axios";
 
-const FilterUser = async (searchKey: string, pageIndex: number, pageSize: number) => {
+const FilterUser = async (searchKey: string, pageIndex: number, pageSize: number, filters) => {
   try {
     const res = await api.get("/v1/User/GetAllByFilter", {
       params: {
         search: searchKey,
         pageIndex,
         pageSize,
+        ...filters
       },
     });
     if (res.data.isSuccess) {
