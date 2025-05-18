@@ -22,6 +22,7 @@ const [filters, setFilters] = useState({
   userType: "",
   role: "",
   applicationGroup: "",
+  applicationSubGroup: "",
 });
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const [filters, setFilters] = useState({
   userType: searchParams.get("userType") || "",
   role: searchParams.get("role") || "",
   applicationGroup: searchParams.get("applicationGroup") || "",
+  applicationSubGroup: searchParams.get("applicationSubGroup") || "",
 };
     setFilters(newFilters);
     console.log("🎯 فیلترهای جدید:", newFilters);

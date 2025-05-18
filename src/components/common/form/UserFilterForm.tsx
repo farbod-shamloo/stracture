@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import Application from "../../../services/Application";
 import Role from "../../../services/Role";
 import ApplicationGroup from "../../../services/ApplicationGroup";
+import ApplicationSubGroup from "../../../services/ApplicationSubGroup";
 
 import { useModal } from "../../../context/ModalContext";
-import ApplicationSubGroup from "../../../services/ApplicationSubGroup";
 
 const UserFilterForm = ({
   onFilter,
-  onClose, // اضافه‌شده برای انصراف
+
 }: {
   onFilter: (formData: any) => void;
   onClose: () => void;
@@ -153,30 +153,33 @@ const UserFilterForm = ({
       </div>
 <div>
   <label className="text-[13px]">زیرگروه سامانه</label>
-  <select
-    name="applicationSubGroup"  // اصلاح نام
-    value={formData.applicationSubGroup}  // اصلاح نام به همانی که در state است
-    onChange={handleChange}
-    onFocus={async () => {
-      if (applicationSubGroups.length === 0) {
-        try {
-          const data = await ApplicationSubGroup(); // اطمینان از وجود این سرویس و ایمپورتش
-          if (data?.data?.items)
-            setApplicationSubGroups(data.data.items);
-        } catch (error) {
-          console.error("Error fetching application sub groups:", error);
-        }
+<select
+  name="applicationSubGroup"
+  value={formData.applicationSubGroup}
+  onChange={handleChange}
+  onFocus={async () => {
+    if (applicationSubGroups.length === 0) {
+      try {
+        const data = await ApplicationSubGroup();
+        if (data?.data?.items) setApplicationSubGroups(data.data.items);
+      } catch (error) {
+        console.error("Error fetching application sub groups:", error);
       }
-    }}
-    className="bg-gray-100 w-full p-2 rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-  >
-    <option value="">لطفاً گروه زیرسامانه را انتخاب کنید</option>
-    {applicationSubGroups.map((group) => (
-      <option key={group.id} value={group.code}>
-        {group.name}
-      </option>
-    ))}
-  </select>
+    }
+  }}
+  disabled={!formData.applicationGroup}
+  className={`bg-gray-100 w-full p-2 rounded text-gray-700 focus:outline-none focus:ring-2 ${
+    !formData.applicationGroup ? "opacity-50 cursor-not-allowed" : "focus:ring-blue-400"
+  }`}
+>
+  <option value="">لطفاً گروه زیرسامانه را انتخاب کنید</option>
+  {applicationSubGroups.map((group) => (
+    <option key={group.id} value={group.code}>
+      {group.name}
+    </option>
+  ))}
+</select>
+
 </div>
 
 
