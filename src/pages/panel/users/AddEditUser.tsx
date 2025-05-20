@@ -18,6 +18,8 @@ import {
 
 import { InboxOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import api from "../../../services/axios";
+import FilterUser from "../../../services/FilterUser";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -31,61 +33,49 @@ const AddEditUser = () => {
   const [nationalCodeValue, setNationalCodeValue] = useState("");
   const [userType, setUserType] = useState("شهروند");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  
+ console.log("id params", id)
 
-  useEffect(() => {
-    if (isEditMode) {
-      axios
-        .post("https://gw.tehrantc.com/ssotest/api/v1/User/User", {
-          id,
-          name: "",
-          nationalCode: "",
-          userName: "",
-          pageNumber: 1,
-          pageSize: 1,
-        })
-        .then((res) => {
-          const user = res.data.data[0];
-          form.setFieldsValue({
-            name: user.name,
-            nationalCode: user.nationalCode,
-            userName: user.userName,
-            userType: user.userType || null,
-            // سایر فیلدها را اضافه کنید
-          });
-          setUserType(user.userType || null);
-          setNationalCodeValue(user.nationalCode || "");
-        })
-        .catch((err) => {
-          console.error("خطا در گرفتن اطلاعات:", err);
-        });
-    }
-  }, [id, form]);
+ useEffect(() => {
+  if (!id) return;
 
-  const onFinish = async (values) => {
-    console.log(values);
-    setLoading(true);
-    try {
-      if (isEditMode) {
-        await axios.put("https://gw.tehrantc.com/ssotest/api/v1/User/Update", {
-          id,
-          ...values,
-        });
-        message.success("ویرایش با موفقیت انجام شد");
-      } else {
-        await axios.post(
-          "https://gw.tehrantc.com/ssotest/api/v1/User/Add",
-          values
-        );
-        message.success("ثبت با موفقیت انجام شد");
-      }
-      navigate("/panel/users");
-    } catch (err) {
-      console.error("خطا:", err);
-      message.error("خطا در عملیات");
-    } finally {
-      setLoading(false);
-    }
-  };
+  axios.get(`https://gw.tehrantc.com/ssotest/api/v1/User/${id}`)
+    .then(res => {
+      const user = res.data.data;
+
+      form.setFieldsValue({
+        nationalCode: user.nationalCode,
+        name: user.firstName,
+        lastName: user.lastName,
+        fatherName: user.fatherName,
+        mobile: user.mobile,
+        // birthDate: user.birthDate ? dayjs(user.birthDate) : null,
+        email: user.email,
+        gender: user.gender,
+        userType: user.userType,
+      });
+
+      setNationalCodeValue(user.nationalCode); // برای نمایش در suffix
+      setUserType(user.userType); // برای نمایش conditional UI
+    })
+    .catch(err => {
+      console.error("❌ Error:", err);
+    });
+}, [id]);
+
+const onFinish = async (values) => {
+  axios.put(`https://gw.tehrantc.com/ssotest/api/v1/User/`, values)
+    .then(res => {
+      console.log("✅ ویرایش با موفقیت انجام شد:", res.data);
+      // می‌تونی یه پیام موفقیت هم نشون بدی یا صفحه رو رفرش کنی
+    })
+    .catch(err => {
+      console.error("❌ خطا در ویرایش:", err);
+      // می‌تونی خطا رو به کاربر نمایش بدی
+    });
+};
+
+
 
   const beforeUpload = (file) => {
     const isValidType = file.type === "image/png" || file.type === "image/jpeg";

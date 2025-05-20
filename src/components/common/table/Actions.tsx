@@ -28,6 +28,7 @@ const actionsConfig = [
     className: "text-red-500",
     onClick: (item, navigate, onDelete) => onDelete?.(item),
   },
+ 
 ];
 
 function Actions({ item, onDelete }) {

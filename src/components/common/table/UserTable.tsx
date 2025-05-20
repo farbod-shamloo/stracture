@@ -21,6 +21,7 @@ const UserTable: React.FC<UserTableProps> = ({ columns }) => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [searchKey, setSearchKey] = useState(searchParams.get("search") || "");
   const [currentData, setCurrentData] = useState<any[]>([]);
+
   
 const [filters, setFilters] = useState({
   application: "",
