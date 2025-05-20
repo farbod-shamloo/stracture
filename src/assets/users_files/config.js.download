@@ -1,0 +1,13 @@
+const APP_API="https://gw.tehrantc.com/ssotest/api/"
+const APP_SSO_API="https://gw.tehrantc.com/ssotest/api/"
+const APP_Socket="https://gw.tehrantc.com/ssotest/notificationHub"
+// if use gateway set gateway address
+//const APP_API_IMG="https://sina-test.tehrantc.com/dargah"
+//const APP_DARGAH_URL="http://sina-test.tehrantc.com/dargah"
+//////////
+const APP_API_IMG="https://gw.tehrantc.com/sinatest"
+const APP_DARGAH_URL="https://sina-test.tehrantc.com/dargah"
+
+const APP_SPLASH_TITLE="پنل مدیریت کاربران <br>ســـامان"
+const APP_API_TREE="backend Tree"
+ 

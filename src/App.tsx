@@ -18,6 +18,7 @@ const App = () => {
 
   return (
     <ConfigProvider locale={fa_IR}
+    direction="rtl"
     theme={{ token: { fontFamily: "IRANYekanXFaNum" } }}
     >
       <ModalProvider>
