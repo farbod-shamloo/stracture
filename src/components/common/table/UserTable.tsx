@@ -164,7 +164,8 @@ const [filters, setFilters] = useState({
         <p className="p-4 text-gray-500">داده‌ای یافت نشد.</p>
       ) : (
         <>
-          <table className="min-w-full divide-y divide-gray-200">
+         <div className="overflow-x-auto rounded-xl shadow-sm">
+           <table className="min-w-full divide-y divide-gray-200">
             <TableHeader columns={columns} />
             <TableBody
               itemsPerPage={itemsPerPage}
@@ -176,6 +177,7 @@ const [filters, setFilters] = useState({
             />
           </table>
 
+         </div>
           <div className="flex items-center justify-center mt-7">
             <Pagination
               totalCount={totalCount}

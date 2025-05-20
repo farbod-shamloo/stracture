@@ -1,9 +1,8 @@
-import React from 'react';
-import UserTable from '../../components/common/table/UserTable';
-
+import React from "react";
+import UserTable from "../../components/common/table/UserTable";
 
 const IndexUser: React.FC = () => {
-      const columns = [
+  const columns = [
     { key: "fullName", label: "نام و نام خانوادگی" },
     { key: "nationalCode", label: "کد ملی" },
     { key: "userName", label: "نام کاربری" },
@@ -15,7 +14,7 @@ const IndexUser: React.FC = () => {
 
   return (
     <div>
-      <UserTable columns={columns}/>
+      <UserTable columns={columns} />
     </div>
   );
 };
