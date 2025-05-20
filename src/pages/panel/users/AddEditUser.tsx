@@ -17,6 +17,7 @@ import {
 } from "antd";
 
 import { InboxOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -430,11 +431,18 @@ const AddEditUser = () => {
 
         <hr className="text-gray-300" />
 
-        <div className="text-center pt-10 flex flex-col ">
-          <i className="fa-solid fa-user-gear text-7xl text-info text-[3rem] text-[#088f99]"></i>
-          <span className="text-[#088f99] text-[20px]">سمــت کـــــاربر</span>
+        {/* <i className="fa-solid fa-user-gear text-7xl text-info text-[3rem] text-[#088f99]"></i> */}
+        <div className="flex flex-col items-center justify-center text-center pt-10">
+          <Icon
+            icon="fluent:layer-diagonal-person-20-regular"
+            width="56"
+            height="56"
+            color="#17a2b8"
+          />
+          <span className="text-[#088f99] text-[20px] mt-2">
+            سمــت کـــــاربر
+          </span>
         </div>
-
         <div className="mt-10 text-[16px]">
           <p>
             - منظور از سمت، موقعیت کاربر در چارت سازمانی مورد نظر است مانند

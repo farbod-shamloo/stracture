@@ -4,6 +4,7 @@ import { Layout, Breadcrumb, theme, Button, Drawer } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import SidebarContent from "../pages/Panel/Sidebar/indexSidebar";
+import AddUser from "../pages/Panel/users/AddUser";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -115,17 +116,8 @@ const PanelLayout: React.FC = () => {
                 ))}
               </Breadcrumb>
             </div>
-            <div>
-              <Link to="/panel/users/add" className="inline-block">
-                <button className="flex items-center gap-2 bg-[#0d56a3] text-white px-3 py-2 rounded-[5px] mt-2.5 cursor-pointer">
-                  <i
-                    className="fa-solid fa-user-plus"
-                    title="ثبت کاربر جدید"
-                  ></i>
-                  کاربر جدید
-                </button>
-              </Link>
-            </div>
+       
+       {selectedKey === "/panel/users" && <AddUser />}
           </div>
 
           <div
