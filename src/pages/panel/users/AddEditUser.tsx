@@ -370,7 +370,7 @@ const AddEditUser = () => {
           </div>
         </>
 
-        <div className="col-span-1 md:col-span-4 fixed bottom-0 left-0 w-[89.6%] bg-white p-4 z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.1)] text-left">
+        <div className="col-span-1 md:col-span-4 fixed bottom-0 left-0 w-[100%] bg-white p-4 z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.1)] text-left">
           <Button
             onClick={() => navigate(-1)}
             style={{

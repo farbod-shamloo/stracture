@@ -97,7 +97,7 @@ const PanelLayout: React.FC = () => {
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
-          <div className="flex items-center justify-between px-1.5 py-3">
+          <div className="flex items-center justify-between px-1.5">
             <div className="flex justify-start items-center mt-4">
               {isMobile && (
                 <div style={{ padding: "10px 16px" }}>

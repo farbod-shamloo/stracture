@@ -91,6 +91,7 @@ const SidebarContent: React.FC<Props> = ({ onMenuClick, onLogout }) => {
       </Popconfirm>
     </Tooltip>
         </div>
+        <hr className="text-gray-300 mt-2"/>
       </div>
 
       <Menu

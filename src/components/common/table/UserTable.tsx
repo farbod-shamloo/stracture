@@ -9,7 +9,12 @@ import Row from "./Row";
 import SearchBar from "./SearchBar";
 import FilterUser from "../../../services/FilterUser";
 
-const UserTable: React.FC = () => {
+
+type UserTableProps = {
+  columns: { key: string; label: string }[];
+};
+
+const UserTable: React.FC<UserTableProps> = ({ columns }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -68,17 +73,10 @@ const [filters, setFilters] = useState({
     setCurrentData(data?.items || []);
   }, [data]);
 
+
+
   const totalCount = data?.totalCount || currentData.length;
 
-  const columns = [
-    { key: "fullName", label: "نام و نام خانوادگی" },
-    { key: "nationalCode", label: "کد ملی" },
-    { key: "userName", label: "نام کاربری" },
-    { key: "status", label: "وضعیت کاربران" },
-    { key: "twoFactorEnabled", label: "ورود دو مرحله ای" },
-    { key: "type", label: "نوع کاربر" },
-    { key: "actions", label: "عملیات" },
-  ];
 
   const handleDelete = (itemToDelete: any) => {
     const newData = currentData.filter((item) => item.id !== itemToDelete.id);
