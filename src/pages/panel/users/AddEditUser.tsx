@@ -16,8 +16,10 @@ import {
   Upload,
   message,
   Drawer,
+  notification ,
   Select,
 } from "antd";
+
 
 
 import { InboxOutlined, QuestionCircleOutlined } from "@ant-design/icons";
@@ -27,10 +29,10 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import api from "../../../services/axios";
 import FilterUser from "../../../services/FilterUser";
 import AllowedIPInput from "./Ip";
+import { getUserById } from "../../../services/GetUserById";
 
 const { Option } = Select;
 const { Dragger } = Upload;
-
 
 const { Text } = Typography;
 
@@ -43,24 +45,22 @@ const AddEditUser = () => {
   const [nationalCodeValue, setNationalCodeValue] = useState("");
   const [userType, setUserType] = useState("شهروند");
   const [drawerOpen, setDrawerOpen] = useState(false);
-   const [enabled, setEnabled] = useState(false);
-
+  const [enabled, setEnabled] = useState(false);
 
   console.log("id params", id);
 
   const reverseGenderMap: Record<string, string> = {
-  "1": "مرد",
-  "2": "زن",
-  "0": "دیگر",
-};
+    "1": "مرد",
+    "2": "زن",
+    "0": "دیگر",
+  };
 
  useEffect(() => {
   if (!id) return;
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`https://gw.tehrantc.com/ssotest/api/v1/User/${id}`);
-      const user = res.data.data;
+      const user = await getUserById(id);
 
       form.setFieldsValue({
         nationalCode: user.nationalCode,
@@ -72,6 +72,7 @@ const AddEditUser = () => {
         email: user.email,
         gender: reverseGenderMap[user.gender],
         userType: user.userType,
+        userName: user.userName,
       });
 
       setNationalCodeValue(user.nationalCode);
@@ -84,27 +85,35 @@ const AddEditUser = () => {
   fetchData();
 }, [id]);
 
-
-
-
-const onFinish = async (values) => {
+ const onFinish = async (values) => {
   setLoading(true);
   try {
     const response = await submitUser({ isEditMode, id, values });
 
     if (response.status === 200 || response.status === 201) {
-      message.success(
-        isEditMode
+      notification.success({
+        message: "عملیات موفق",
+        description: isEditMode
           ? "کاربر با موفقیت ویرایش شد!"
-          : "کاربر با موفقیت اضافه شد!"
-      );
-      navigate('/panel/users');
+          : "کاربر با موفقیت اضافه شد!",
+        placement: "topRight",
+      });
+
+      navigate("/panel/users");
     } else {
-      message.error("خطا در انجام عملیات");
+      notification.error({
+        message: "خطا",
+        description: "خطا در انجام عملیات",
+        placement: "topRight",
+      });
     }
   } catch (error) {
     console.error("Axios error response data:", error.response?.data);
-    message.error("خطا در ارتباط با سرور");
+    notification.error({
+      message: "خطا در ارتباط با سرور",
+      description: "لطفاً اتصال اینترنت یا سرور را بررسی کنید.",
+      placement: "topRight",
+    });
   } finally {
     setLoading(false);
   }
@@ -127,8 +136,12 @@ const onFinish = async (values) => {
   return (
     <div className="">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold">
-          {isEditMode ? "ویرایش کاربر" : "ثبت کاربر"}
+        <h1 className="text-xl">
+          {isEditMode
+            ? `${form.getFieldValue("firstName") || ""} ${
+                form.getFieldValue("lastName") || ""
+              }`
+            : "ثبت کاربر"}
         </h1>
         <button
           onClick={() => navigate(-1)}
@@ -176,7 +189,7 @@ const onFinish = async (values) => {
                 form.setFieldsValue({ nationalCode: val });
               }}
               suffix={`${nationalCodeValue.length}/10`}
-              inputMode="numeric" // موبایل فقط عدد
+              inputMode="numeric" 
               pattern="[0-9]*"
             />
           </Form.Item>
@@ -244,10 +257,7 @@ const onFinish = async (values) => {
         <Form.Item
           name="email"
           label="ایمیل"
-          rules={[
-
-            { type: "email", message: "ایمیل معتبر نیست" },
-          ]}
+          rules={[{ type: "email", message: "ایمیل معتبر نیست" }]}
         >
           <Input style={{ backgroundColor: "#fafafa", padding: "8px" }} />
         </Form.Item>
@@ -267,130 +277,217 @@ const onFinish = async (values) => {
         </div>
 
         <div className="col-span-1 md:col-span-4">
-        <div className="flex justify-between w-[90%] ">
-               <Form.Item
-        name="status"
-        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>وضعیت</label>}
-        style={{ flex: 1 }}
-      >
-        <Radio.Group onChange={(e) => setStatus(e.target.value)} value={status}>
-          <Radio value="فعال">فعال</Radio>
-          <Radio value="غیرفعال">غیرفعال</Radio>
-        </Radio.Group>
-      </Form.Item>
+          <div className="flex justify-between w-[90%] ">
+            <Form.Item
+              name="status"
+              label={
+                <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                  وضعیت
+                </label>
+              }
+              style={{ flex: 1 }}
+            >
+              <Radio.Group
+                onChange={(e) => setStatus(e.target.value)}
+                value={status}
+              >
+                <Radio value="فعال">فعال</Radio>
+                <Radio value="غیرفعال">غیرفعال</Radio>
+              </Radio.Group>
+            </Form.Item>
 
-      <Form.Item
-        name="TwoFactorEnabled"
-        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>ورود دو مرحله</label>}
-        style={{ flex: 1 }}
-      >
-        <Radio.Group onChange={(e) => setUserType(e.target.value)} value={userType}>
-          <Radio value="فعال">فعال</Radio>
-          <Radio value="غیرفعال">غیرفعال</Radio>
-        </Radio.Group>
-      </Form.Item>
+            <Form.Item
+              name="TwoFactorEnabled"
+              label={
+                <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                  ورود دو مرحله
+                </label>
+              }
+              style={{ flex: 1 }}
+            >
+              <Radio.Group
+                onChange={(e) => setUserType(e.target.value)}
+                value={userType}
+              >
+                <Radio value="فعال">فعال</Radio>
+                <Radio value="غیرفعال">غیرفعال</Radio>
+              </Radio.Group>
+            </Form.Item>
 
-      <Form.Item
-        name="SMSWebServiceAccess"
-        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>درسترسی به وب سرویس</label>}
-        style={{ flex: 1 }}
-      >
-        <Radio.Group onChange={(e) => setUserType(e.target.value)} value={userType}>
-          <Radio value="دارد">دارد</Radio>
-          <Radio value="نندارد">ندارد</Radio>
-        </Radio.Group>
-      </Form.Item>
+            <Form.Item
+              name="SMSWebServiceAccess"
+              label={
+                <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                  درسترسی به وب سرویس
+                </label>
+              }
+              style={{ flex: 1 }}
+            >
+              <Radio.Group
+                onChange={(e) => setUserType(e.target.value)}
+                value={userType}
+              >
+                <Radio value="دارد">دارد</Radio>
+                <Radio value="نندارد">ندارد</Radio>
+              </Radio.Group>
+            </Form.Item>
 
-      <Form.Item
-        name="userType"
-        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>نوع کاربر</label>}
-        style={{ flex: 1 }}
-      >
-        <Radio.Group onChange={(e) => setUserType(e.target.value)} value={userType}>
-          <Radio value="شهروند">شهروند</Radio>
-          <Radio value="سازمانی">سازمانی</Radio>
-          <Radio value="ldap">LDAP</Radio>
-        </Radio.Group>
-      </Form.Item>
-        </div>
+            <Form.Item
+              name="userType"
+              label={
+                <label style={{ fontSize: "12px", fontWeight: "500" }}>
+                  نوع کاربر
+                </label>
+              }
+              style={{ flex: 1 }}
+            >
+              <Radio.Group
+                onChange={(e) => setUserType(e.target.value)}
+                value={userType}
+              >
+                <Radio value="شهروند">شهروند</Radio>
+                <Radio value="سازمانی">سازمانی</Radio>
+                <Radio value="ldap">LDAP</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </div>
 
-<div style={{ display: "flex", gap: "16px" }}>
+          <div style={{ display: "flex", gap: "16px" }}>
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+              }}
+            >
+              <Form.Item
+                name="userName"
+                label={<label style={{ fontSize: "12px" }}>نام کاربری</label>}
+                rules={[
+                  { required: true, message: "لطفاً نام کاربری را وارد کنید" },
+                  {
+                    pattern: /^[0-9]+$/,
+                    message: "نام کاربری باید فقط عدد باشد",
+                  },
+                ]}
+              >
+                <Input
+                  style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                  maxLength={11}
+                  disabled={isEditMode}
+                />
+              </Form.Item>
 
-  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
-    <Form.Item
-      name="userName"
-      label={<label style={{ fontSize: "12px" }}>نام کاربری</label>}
-      rules={[
-        { required: true, message: "لطفاً نام کاربری را وارد کنید" },
-        { pattern: /^[0-9]+$/, message: "نام کاربری باید فقط عدد باشد" },
-      ]}
-    >
-      <Input  style={{ backgroundColor: "#fafafa", padding: "8px" }} maxLength={11} />
-    </Form.Item>
+              {!isEditMode && (
+                <>
+                  <Form.Item
+                    name="passwordRepeat"
+                    label={
+                      <label style={{ fontSize: "12px" }}>تکرار رمز عبور</label>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: "لطفاً رمز عبور را وارد کنید",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                    />
+                  </Form.Item>
 
-    <Form.Item
-      name="passwordRepeat"
-      label={<label style={{ fontSize: "12px" }}>تکرار رمز عبور</label>}
-      rules={[{ required: true, message: "لطفاً رمز عبور را وارد کنید" }]}
-    >
-      <Input.Password  style={{ backgroundColor: "#fafafa", padding: "8px" }} />
-    </Form.Item>
-  </div>
+                  <Form.Item
+                    name="password"
+                    label={<label style={{ fontSize: "12px" }}>رمز عبور</label>}
+                    rules={[
+                      {
+                        required: true,
+                        message: "لطفاً رمز عبور را وارد کنید",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                    />
+                  </Form.Item>
+                </>
+              )}
+            </div>
 
+            <div style={{ flex: 1 }}>
+              <Form.Item
+                name="type1"
+                label={
+                  <label style={{ fontSize: "12px" }}>استعلام ثبت احوال</label>
+                }
+              >
+                <Input
+                  disabled
+                  style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                />
+              </Form.Item>
+            </div>
 
-  <div style={{ flex: 1 }}>
-    <Form.Item
-      name="type1"
-      label={<label style={{ fontSize: "12px" }}>استعلام ثبت احوال</label>}
-    >
-      <Input disabled style={{ backgroundColor: "#fafafa", padding: "8px" }} />
-    </Form.Item>
-  </div>
+            <div style={{ flex: 1 }}>
+              <Form.Item
+                name="type2"
+                label={
+                  <label style={{ fontSize: "12px" }}>استعلام شاهکار</label>
+                }
+              >
+                <Input
+                  disabled
+                  style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                />
+              </Form.Item>
+            </div>
+          </div>
 
+          <div className="flex justify-between w-[70%] items-center gap-6">
+            <Form.Item label="تعیین نوع ساعات محدودیت ورود" className="mb-0">
+              <Switch
+                checked={enabled}
+                onChange={setEnabled}
+                checkedChildren="مجاز به ورود در ساعات معین"
+                unCheckedChildren="عدم مجاز به ورود در ساعات معین"
+                style={{ minWidth: 180 }}
+              />
+            </Form.Item>
 
-  <div style={{ flex: 1 }}>
-    <Form.Item
-      name="type2"
-      label={<label style={{ fontSize: "12px" }}>استعلام شاهکار</label>}
-    >
-      <Input disabled style={{ backgroundColor: "#fafafa", padding: "8px" }} />
-    </Form.Item>
-  </div>
+            <Form.Item
+              label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"}
+              className="flex-1"
+            >
+              <TimePicker
+                disabled={!enabled}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#fafafa",
+                  padding: "8px",
+                }}
+              />
+            </Form.Item>
 
-  <div style={{ flex: 1 }}>
-    <Form.Item
-      name="password"
-      label={<label style={{ fontSize: "12px" }}>رمز عبور</label>}
-      rules={[{ required: true, message: "لطفاً رمز عبور را وارد کنید" }]}
-    >
-      <Input.Password style={{ backgroundColor: "#fafafa", padding: "8px" }} />
-    </Form.Item>
-  </div>
-</div>
+            <Form.Item
+              label={
+                enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"
+              }
+              className="flex-1"
+            >
+              <TimePicker
+                disabled={!enabled}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#fafafa",
+                  padding: "8px",
+                }}
+              />
+            </Form.Item>
+          </div>
 
-
-    <div className="flex justify-between w-[70%] items-center gap-6">
-      <Form.Item label="تعیین نوع ساعات محدودیت ورود" className="mb-0">
-        <Switch
-          checked={enabled}
-          onChange={setEnabled}
-          checkedChildren="مجاز به ورود در ساعات معین"
-          unCheckedChildren="عدم مجاز به ورود در ساعات معین"
-          style={{ minWidth: 180 }}
-        />
-      </Form.Item>
-
-      <Form.Item label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"} className="flex-1">
-        <TimePicker disabled={!enabled} style={{ width: "100%", backgroundColor: "#fafafa", padding: "8px" }} />
-      </Form.Item>
-
-      <Form.Item label={enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"} className="flex-1">
-        <TimePicker disabled={!enabled} style={{ width: "100%", backgroundColor: "#fafafa", padding: "8px" }} />
-      </Form.Item>
-    </div>
-
-
-    <AllowedIPInput />
+          <AllowedIPInput />
         </div>
 
         {userType === "سازمانی" && (

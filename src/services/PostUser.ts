@@ -33,6 +33,7 @@ export const submitUser = async ({ isEditMode, id, values }: UserPayload) => {
   formData.append("Email", values.email || "");
   formData.append("Mobile", values.mobile || "");
   formData.append("NationalCode", values.nationalCode || "");
+//   formData.append("Status", values.status || "");
 
   formData.append(
     "BirthDate",
@@ -44,13 +45,11 @@ export const submitUser = async ({ isEditMode, id, values }: UserPayload) => {
     console.log(`${key}: ${value}`);
   }
 
-  const url = isEditMode
-    ? `https://gw.tehrantc.com/ssotest/api/v1/User/${id}`
-    : "https://gw.tehrantc.com/ssotest/api/v1/User";
+ 
 
   const method = isEditMode ? axios.put : axios.post;
 
-  const response = await method(url, formData, {
+  const response = await method("https://gw.tehrantc.com/ssotest/api/v1/User", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 

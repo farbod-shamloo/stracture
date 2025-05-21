@@ -8,7 +8,7 @@ const Dash = lazy(() => import("../pages/panel/Dash"));
 const Team = lazy(() => import("../pages/Panel/Team"));
 const Files = lazy(() => import("../pages/Panel/Files"));
 const ErrorLayout = lazy(() => import("../layout/ErrorLayout"));
-const AddEditUser = lazy (() => import("../pages/panel/users/AddEditUser")) // اگه lazy نخواستی، می‌تونی مستقیم ایمپورت کنیP
+const AddEditUser = lazy (() => import("../pages/panel/users/AddEditUser")) 
 const panelRoutes = {
   path: "/panel",
   element: withSuspense(PanelLayout),
@@ -20,11 +20,11 @@ const panelRoutes = {
     },
     {
       path: "users/add",
-      element: withSuspense(AddEditUser), // صفحه ثبت کاربر
+      element: withSuspense(AddEditUser), 
     },
     {
       path: "users/edit/:id",
-      element: withSuspense(AddEditUser), // صفحه ویرایش کاربر
+      element: withSuspense(AddEditUser), 
     },
     {
       path: "orders",

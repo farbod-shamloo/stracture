@@ -82,7 +82,17 @@ const PanelLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {!hideSidebar && (
-        <Sider theme="light" collapsible={false} collapsed={collapsed}>
+        <Sider
+          theme="light"
+          collapsible={false}
+          collapsed={collapsed}
+          style={{
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            overflow: "auto",
+          }}
+        >
           {sidebar}
         </Sider>
       )}
@@ -116,8 +126,8 @@ const PanelLayout: React.FC = () => {
                 ))}
               </Breadcrumb>
             </div>
-       
-       {selectedKey === "/panel/users" && <AddUser />}
+
+            {selectedKey === "/panel/users" && <AddUser />}
           </div>
 
           <div
