@@ -33,49 +33,99 @@ const AddEditUser = () => {
   const [nationalCodeValue, setNationalCodeValue] = useState("");
   const [userType, setUserType] = useState("شهروند");
   const [drawerOpen, setDrawerOpen] = useState(false);
-  
- console.log("id params", id)
 
- useEffect(() => {
-  if (!id) return;
+  console.log("id params", id);
 
-  axios.get(`https://gw.tehrantc.com/ssotest/api/v1/User/${id}`)
-    .then(res => {
-      const user = res.data.data;
+  useEffect(() => {
+    if (!id) return;
 
-      form.setFieldsValue({
-        nationalCode: user.nationalCode,
-        name: user.firstName,
-        lastName: user.lastName,
-        fatherName: user.fatherName,
-        mobile: user.mobile,
-        // birthDate: user.birthDate ? dayjs(user.birthDate) : null,
-        email: user.email,
-        gender: user.gender,
-        userType: user.userType,
+    axios
+      .get(`https://gw.tehrantc.com/ssotest/api/v1/User/${id}`)
+      .then((res) => {
+        const user = res.data.data;
+
+        form.setFieldsValue({
+          nationalCode: user.nationalCode,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          fatherName: user.fatherName,
+          mobile: user.mobile,
+          // birthDate: user.birthDate,
+          email: user.email,
+          gender: user.gender,
+          userType: user.userType,
+        });
+
+        setNationalCodeValue(user.nationalCode);
+        setUserType(user.userType);
+      })
+      .catch((err) => {
+        console.error(" Error:", err);
       });
+  }, [id]);
 
-      setNationalCodeValue(user.nationalCode); // برای نمایش در suffix
-      setUserType(user.userType); // برای نمایش conditional UI
-    })
-    .catch(err => {
-      console.error("❌ Error:", err);
-    });
-}, [id]);
-
-const onFinish = async (values) => {
-  axios.put(`https://gw.tehrantc.com/ssotest/api/v1/User/`, values)
-    .then(res => {
-      console.log("✅ ویرایش با موفقیت انجام شد:", res.data);
-      // می‌تونی یه پیام موفقیت هم نشون بدی یا صفحه رو رفرش کنی
-    })
-    .catch(err => {
-      console.error("❌ خطا در ویرایش:", err);
-      // می‌تونی خطا رو به کاربر نمایش بدی
-    });
+     const genderMap: Record<string, string> = {
+  "مرد": "1",
+  "زن": "2",
+  "نامشخص": "0"
 };
 
+const onFinish = async (values) => {
+  setLoading(true);
+  try {
+    const formData = new FormData();
 
+    formData.append("UserName", values.userName || "");
+    formData.append("Password", values.password || "");
+
+    formData.append("FirstName", values.firstName || "");
+    formData.append("LastName", values.lastName || "");
+    formData.append("FatherName", values.fatherName || "");
+    formData.append("Gender", genderMap[values.gender] ?? "0");
+    formData.append("Email", values.email || "");
+    formData.append("Mobile", values.mobile || "");
+    formData.append("NationalCode", values.nationalCode || "");
+    formData.append(
+      "BirthDate",
+      values.birthDate ? values.birthDate.toISOString().split("T")[0] : ""
+    );
+
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    let response;
+    if (isEditMode) {
+      response = await axios.put(
+        `https://gw.tehrantc.com/ssotest/api/v1/User/${id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+    } else {
+      response = await axios.post(
+        "https://gw.tehrantc.com/ssotest/api/v1/User",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+    }
+
+    if (response.status === 200 || response.status === 201) {
+      message.success(
+        isEditMode
+          ? "کاربر با موفقیت ویرایش شد!"
+          : "کاربر با موفقیت اضافه شد!"
+      );
+      navigate(-1);
+    } else {
+      message.error("خطا در انجام عملیات");
+    }
+  } catch (error) {
+    console.error("Axios error response data:", error.response?.data);
+    message.error("خطا در ارتباط با سرور");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const beforeUpload = (file) => {
     const isValidType = file.type === "image/png" || file.type === "image/jpeg";
@@ -151,7 +201,7 @@ const onFinish = async (values) => {
 
         <div className="col-span-1">
           <Form.Item
-            name="name"
+            name="firstName"
             label="نام"
             rules={[{ required: true, message: "نام را وارد کنید" }]}
           >
@@ -248,6 +298,40 @@ const onFinish = async (values) => {
               <Radio value="ldap">LDAP</Radio>
             </Radio.Group>
           </Form.Item>
+
+<div style={{ display: "flex", gap: "16px" }}>
+  <div style={{ flex: 1 }}>
+    <Form.Item
+      name="userName"
+      label="نام کاربری"
+      rules={[
+        { required: true, message: "لطفاً نام کاربری را وارد کنید" },
+        {
+          pattern: /^[0-9]+$/,
+          message: "نام کاربری باید فقط عدد باشد",
+        },
+      ]}
+    >
+      <Input
+        style={{ backgroundColor: "#fafafa", padding: "8px" }}
+        maxLength={11}
+      />
+    </Form.Item>
+  </div>
+
+  <div style={{ flex: 1 }}>
+    <Form.Item
+      name="password"
+      label="رمز عبور"
+      rules={[
+        { required: true, message: "لطفاً رمز عبور را وارد کنید" },
+      ]}
+    >
+      <Input.Password style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+    </Form.Item>
+  </div>
+</div>
+
         </div>
 
         {userType === "سازمانی" && (
@@ -283,7 +367,6 @@ const onFinish = async (values) => {
               label="تصویر کاربر"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-              rules={[{ required: true, message: "تصویر کاربر را آپلود کنید" }]}
             >
               <Upload.Dragger
                 name="file"
@@ -324,7 +407,6 @@ const onFinish = async (values) => {
               label="تصویر امضا"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-              rules={[{ required: true, message: "تصویر امضا را آپلود کنید" }]}
             >
               <Upload.Dragger
                 name="file"

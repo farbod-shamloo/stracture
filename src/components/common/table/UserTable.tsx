@@ -135,14 +135,6 @@ const [filters, setFilters] = useState({
     setSearchParams(params);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-10">
-        <span className="text-gray-500">در حال بارگذاری اطلاعات...</span>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex justify-center items-center py-10 text-red-500">
@@ -160,10 +152,7 @@ const [filters, setFilters] = useState({
         totalCount={totalCount}
         onFilter={handleFilter}
       />
-
-      {currentData.length === 0 ? (
-        <p className="p-4 text-gray-500">داده‌ای یافت نشد.</p>
-      ) : (
+ 
         <>
          <div className="overflow-x-auto rounded-xl shadow-sm">
            <table className="min-w-full divide-y divide-gray-200">
@@ -192,7 +181,7 @@ const [filters, setFilters] = useState({
             />
           </div>
         </>
-      )}
+      
     </div>
   );
 };

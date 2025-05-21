@@ -5,28 +5,36 @@ import { convertToJalali } from "../../../utils/convertToJalali";
 type TableBodyProps = {
   data: any[];
   columns: { key: string; label: string }[];
-   currentPage: number;
+  currentPage: number;
   itemsPerPage: number;
 };
 
-const TableBody: React.FC<TableBodyProps> = ({ data, columns, onDelete, setData, currentPage, itemsPerPage }) => {
+const TableBody: React.FC<TableBodyProps> = ({
+  data,
+  columns,
+  onDelete,
+  setData,
+  currentPage,
+  itemsPerPage,
+}) => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   const toggleExpand = (index: number) => {
-    setExpandedRow(prev => (prev === index ? null : index));
+    setExpandedRow((prev) => (prev === index ? null : index));
   };
 
-const handleDelete = (item) => {
-  const confirmDelete = window.confirm(`آیا مطمئن هستید که می‌خواهید کاربر ${item.firstName} ${item.lastName} را حذف کنید؟`);
-  
-  if (confirmDelete) {
-    console.log("User deleted:", item);
-    onDelete(item); // حذف کاربر
-  } else {
-    console.log("Delete canceled");
-  }
-};
+  const handleDelete = (item) => {
+    const confirmDelete = window.confirm(
+      `آیا مطمئن هستید که می‌خواهید کاربر ${item.firstName} ${item.lastName} را حذف کنید؟`
+    );
 
+    if (confirmDelete) {
+      console.log("User deleted:", item);
+      onDelete(item); // حذف کاربر
+    } else {
+      console.log("Delete canceled");
+    }
+  };
 
   const renderCellContent = (colKey, item) => {
     const statusBadge = (text: string, color: string) => {
@@ -38,7 +46,9 @@ const handleDelete = (item) => {
       };
 
       return (
-        <span className={`px-3 py-1 rounded-[5px] text-xs font-semibold ${colorMap[color]}`}>
+        <span
+          className={`px-3 py-1 rounded-[5px] text-xs font-semibold ${colorMap[color]}`}
+        >
           {text}
         </span>
       );
@@ -60,18 +70,23 @@ const handleDelete = (item) => {
           ? statusBadge("فعال", "green")
           : statusBadge("غیرفعال", "red");
       case "actions":
-        return <Actions data={data} item={item} onDelete={handleDelete}/>;
+        return <Actions data={data} item={item} onDelete={handleDelete} />;
       default:
         return item[colKey];
     }
   };
 
   return (
-    <tbody className="bg-white divide-y divide-gray-200" >
+    <tbody className="bg-white divide-y divide-gray-200">
       {data.length === 0 ? (
         <tr>
-          <td colSpan={columns.length + 1} className="text-center py-4 text-gray-500">
-            داده‌ای یافت نشد.
+          <td colSpan={columns.length + 1} className="py-6 text-center">
+            <div className="flex justify-center items-center space-x-2">
+              <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce [animation-delay:0.1s]"></div>
+              <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+            </div>
+            <p className="text-gray-500 mt-2">در حال بارگذاری اطلاعات...</p>
           </td>
         </tr>
       ) : (
@@ -79,7 +94,6 @@ const handleDelete = (item) => {
           <>
             <tr className="even:bg-gray-50 border-0" key={item.id || index}>
               <td className="px-6 py-4 text-sm text-gray-500 text-center flex items-center justify-center gap-2 relative">
-               
                 <button
                   onClick={() => toggleExpand(index)}
                   className="transition-transform duration-200 focus:outline-none absolute right-2 top-1/2 -translate-y-1/2"
@@ -92,7 +106,7 @@ const handleDelete = (item) => {
                     ❯
                   </span>
                 </button>
-               <span>{currentPage * itemsPerPage + index + 1}</span>
+                <span>{currentPage * itemsPerPage + index + 1}</span>
               </td>
 
               {columns.map((col) => (
@@ -108,17 +122,20 @@ const handleDelete = (item) => {
 
             {expandedRow === index && (
               <tr className="bg-gray-50">
-                <td colSpan={columns.length + 1} className="px-6 py-6 text-sm text-gray-700">
+                <td
+                  colSpan={columns.length + 1}
+                  className="px-6 py-6 text-sm text-gray-700"
+                >
                   <div className="text-right space-y-1">
                     <p> جنسیت: {item.gender}</p>
                     <p> نام پدر: {item.fatherName}</p>
                     <p> تاریخ تولد: {convertToJalali(item.birthDate)}</p>
                     <p> کدملی: {item.nationalCode}</p>
                     <p> کد پرسنلی: {item.personelCode}</p>
-                    <p>  موبایل: {item.mobile}</p>
-                    <p>  ایمیل: {item.email}</p>
-                    <p>  تعداد دسترسی: {item.permissionCount}</p>
-                    <p>  سمت ها: {item.email}</p>
+                    <p> موبایل: {item.mobile}</p>
+                    <p> ایمیل: {item.email}</p>
+                    <p> تعداد دسترسی: {item.permissionCount}</p>
+                    <p> سمت ها: {item.email}</p>
                   </div>
                 </td>
               </tr>
