@@ -398,20 +398,6 @@ const AddEditUser = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item
-                    name="password"
-                    label={<label style={{ fontSize: "12px" }}>رمز عبور</label>}
-                    rules={[
-                      {
-                        required: true,
-                        message: "لطفاً رمز عبور را وارد کنید",
-                      },
-                    ]}
-                  >
-                    <Input.Password
-                      style={{ backgroundColor: "#fafafa", padding: "8px" }}
-                    />
-                  </Form.Item>
                 </>
               )}
             </div>
@@ -443,6 +429,26 @@ const AddEditUser = () => {
                 />
               </Form.Item>
             </div>
+
+         {!isEditMode && (<>
+         <div style={{flex: 1}}>
+             <Form.Item
+                    name="password"
+                    label={<label style={{ fontSize: "12px" }}>رمز عبور</label>}
+                    rules={[
+                      {
+                        required: true,
+                        message: "لطفاً رمز عبور را وارد کنید",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                    />
+                  </Form.Item>
+          </div>
+         
+         </>)} 
           </div>
 
           <div className="flex justify-between w-[70%] items-center gap-6">
