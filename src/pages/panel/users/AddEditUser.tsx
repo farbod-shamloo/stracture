@@ -8,7 +8,10 @@ import {
   Form,
   Input,
   Radio,
+  Switch,
   DatePicker,
+  TimePicker,
+  Typography,
   Divider,
   Upload,
   message,
@@ -16,13 +19,20 @@ import {
   Select,
 } from "antd";
 
+
 import { InboxOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+
+import { submitUser } from "../../../services/PostUser";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import api from "../../../services/axios";
 import FilterUser from "../../../services/FilterUser";
+import AllowedIPInput from "./Ip";
 
 const { Option } = Select;
 const { Dragger } = Upload;
+
+
+const { Text } = Typography;
 
 const AddEditUser = () => {
   const { id } = useParams();
@@ -33,81 +43,54 @@ const AddEditUser = () => {
   const [nationalCodeValue, setNationalCodeValue] = useState("");
   const [userType, setUserType] = useState("شهروند");
   const [drawerOpen, setDrawerOpen] = useState(false);
+   const [enabled, setEnabled] = useState(false);
+
 
   console.log("id params", id);
 
-  useEffect(() => {
-    if (!id) return;
-
-    axios
-      .get(`https://gw.tehrantc.com/ssotest/api/v1/User/${id}`)
-      .then((res) => {
-        const user = res.data.data;
-
-        form.setFieldsValue({
-          nationalCode: user.nationalCode,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          fatherName: user.fatherName,
-          mobile: user.mobile,
-          // birthDate: user.birthDate,
-          email: user.email,
-          gender: user.gender,
-          userType: user.userType,
-        });
-
-        setNationalCodeValue(user.nationalCode);
-        setUserType(user.userType);
-      })
-      .catch((err) => {
-        console.error(" Error:", err);
-      });
-  }, [id]);
-
-     const genderMap: Record<string, string> = {
-  "مرد": "1",
-  "زن": "2",
-  "نامشخص": "0"
+  const reverseGenderMap: Record<string, string> = {
+  "1": "مرد",
+  "2": "زن",
+  "0": "دیگر",
 };
+
+ useEffect(() => {
+  if (!id) return;
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(`https://gw.tehrantc.com/ssotest/api/v1/User/${id}`);
+      const user = res.data.data;
+
+      form.setFieldsValue({
+        nationalCode: user.nationalCode,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fatherName: user.fatherName,
+        mobile: user.mobile,
+        // birthDate: user.birthDate ? dayjs(user.birthDate) : null,
+        email: user.email,
+        gender: reverseGenderMap[user.gender],
+        userType: user.userType,
+      });
+
+      setNationalCodeValue(user.nationalCode);
+      setUserType(user.userType);
+    } catch (err) {
+      console.error("Error loading user data:", err);
+    }
+  };
+
+  fetchData();
+}, [id]);
+
+
+
 
 const onFinish = async (values) => {
   setLoading(true);
   try {
-    const formData = new FormData();
-
-    formData.append("UserName", values.userName || "");
-    formData.append("Password", values.password || "");
-
-    formData.append("FirstName", values.firstName || "");
-    formData.append("LastName", values.lastName || "");
-    formData.append("FatherName", values.fatherName || "");
-    formData.append("Gender", genderMap[values.gender] ?? "0");
-    formData.append("Email", values.email || "");
-    formData.append("Mobile", values.mobile || "");
-    formData.append("NationalCode", values.nationalCode || "");
-    formData.append(
-      "BirthDate",
-      values.birthDate ? values.birthDate.toISOString().split("T")[0] : ""
-    );
-
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
-    let response;
-    if (isEditMode) {
-      response = await axios.put(
-        `https://gw.tehrantc.com/ssotest/api/v1/User/${id}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-    } else {
-      response = await axios.post(
-        "https://gw.tehrantc.com/ssotest/api/v1/User",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-    }
+    const response = await submitUser({ isEditMode, id, values });
 
     if (response.status === 200 || response.status === 201) {
       message.success(
@@ -115,7 +98,7 @@ const onFinish = async (values) => {
           ? "کاربر با موفقیت ویرایش شد!"
           : "کاربر با موفقیت اضافه شد!"
       );
-      navigate(-1);
+      navigate('/panel/users');
     } else {
       message.error("خطا در انجام عملیات");
     }
@@ -262,7 +245,7 @@ const onFinish = async (values) => {
           name="email"
           label="ایمیل"
           rules={[
-            { required: true, message: "لطفاً ایمیل را وارد کنید" },
+
             { type: "email", message: "ایمیل معتبر نیست" },
           ]}
         >
@@ -284,54 +267,130 @@ const onFinish = async (values) => {
         </div>
 
         <div className="col-span-1 md:col-span-4">
-          <Form.Item
-            name="userType"
-            label="نوع کاربر"
-            rules={[{ required: true, message: "نوع کاربر را انتخاب کنید" }]}
-          >
-            <Radio.Group
-              onChange={(e) => setUserType(e.target.value)}
-              value={userType}
-            >
-              <Radio value="شهروند">شهروند</Radio>
-              <Radio value="سازمانی">سازمانی</Radio>
-              <Radio value="ldap">LDAP</Radio>
-            </Radio.Group>
-          </Form.Item>
+        <div className="flex justify-between w-[90%] ">
+               <Form.Item
+        name="status"
+        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>وضعیت</label>}
+        style={{ flex: 1 }}
+      >
+        <Radio.Group onChange={(e) => setStatus(e.target.value)} value={status}>
+          <Radio value="فعال">فعال</Radio>
+          <Radio value="غیرفعال">غیرفعال</Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      <Form.Item
+        name="TwoFactorEnabled"
+        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>ورود دو مرحله</label>}
+        style={{ flex: 1 }}
+      >
+        <Radio.Group onChange={(e) => setUserType(e.target.value)} value={userType}>
+          <Radio value="فعال">فعال</Radio>
+          <Radio value="غیرفعال">غیرفعال</Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      <Form.Item
+        name="SMSWebServiceAccess"
+        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>درسترسی به وب سرویس</label>}
+        style={{ flex: 1 }}
+      >
+        <Radio.Group onChange={(e) => setUserType(e.target.value)} value={userType}>
+          <Radio value="دارد">دارد</Radio>
+          <Radio value="نندارد">ندارد</Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      <Form.Item
+        name="userType"
+        label={<label style={{ fontSize: "12px", fontWeight: "500" }}>نوع کاربر</label>}
+        style={{ flex: 1 }}
+      >
+        <Radio.Group onChange={(e) => setUserType(e.target.value)} value={userType}>
+          <Radio value="شهروند">شهروند</Radio>
+          <Radio value="سازمانی">سازمانی</Radio>
+          <Radio value="ldap">LDAP</Radio>
+        </Radio.Group>
+      </Form.Item>
+        </div>
 
 <div style={{ display: "flex", gap: "16px" }}>
-  <div style={{ flex: 1 }}>
+
+  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
     <Form.Item
       name="userName"
-      label="نام کاربری"
+      label={<label style={{ fontSize: "12px" }}>نام کاربری</label>}
       rules={[
         { required: true, message: "لطفاً نام کاربری را وارد کنید" },
-        {
-          pattern: /^[0-9]+$/,
-          message: "نام کاربری باید فقط عدد باشد",
-        },
+        { pattern: /^[0-9]+$/, message: "نام کاربری باید فقط عدد باشد" },
       ]}
     >
-      <Input
-        style={{ backgroundColor: "#fafafa", padding: "8px" }}
-        maxLength={11}
-      />
+      <Input  style={{ backgroundColor: "#fafafa", padding: "8px" }} maxLength={11} />
+    </Form.Item>
+
+    <Form.Item
+      name="passwordRepeat"
+      label={<label style={{ fontSize: "12px" }}>تکرار رمز عبور</label>}
+      rules={[{ required: true, message: "لطفاً رمز عبور را وارد کنید" }]}
+    >
+      <Input.Password  style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+    </Form.Item>
+  </div>
+
+
+  <div style={{ flex: 1 }}>
+    <Form.Item
+      name="type1"
+      label={<label style={{ fontSize: "12px" }}>استعلام ثبت احوال</label>}
+    >
+      <Input disabled style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+    </Form.Item>
+  </div>
+
+
+  <div style={{ flex: 1 }}>
+    <Form.Item
+      name="type2"
+      label={<label style={{ fontSize: "12px" }}>استعلام شاهکار</label>}
+    >
+      <Input disabled style={{ backgroundColor: "#fafafa", padding: "8px" }} />
     </Form.Item>
   </div>
 
   <div style={{ flex: 1 }}>
     <Form.Item
       name="password"
-      label="رمز عبور"
-      rules={[
-        { required: true, message: "لطفاً رمز عبور را وارد کنید" },
-      ]}
+      label={<label style={{ fontSize: "12px" }}>رمز عبور</label>}
+      rules={[{ required: true, message: "لطفاً رمز عبور را وارد کنید" }]}
     >
       <Input.Password style={{ backgroundColor: "#fafafa", padding: "8px" }} />
     </Form.Item>
   </div>
 </div>
 
+
+    <div className="flex justify-between w-[70%] items-center gap-6">
+      <Form.Item label="تعیین نوع ساعات محدودیت ورود" className="mb-0">
+        <Switch
+          checked={enabled}
+          onChange={setEnabled}
+          checkedChildren="مجاز به ورود در ساعات معین"
+          unCheckedChildren="عدم مجاز به ورود در ساعات معین"
+          style={{ minWidth: 180 }}
+        />
+      </Form.Item>
+
+      <Form.Item label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"} className="flex-1">
+        <TimePicker disabled={!enabled} style={{ width: "100%", backgroundColor: "#fafafa", padding: "8px" }} />
+      </Form.Item>
+
+      <Form.Item label={enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"} className="flex-1">
+        <TimePicker disabled={!enabled} style={{ width: "100%", backgroundColor: "#fafafa", padding: "8px" }} />
+      </Form.Item>
+    </div>
+
+
+    <AllowedIPInput />
         </div>
 
         {userType === "سازمانی" && (
