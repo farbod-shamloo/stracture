@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import api from "../utils/axios";
 
 interface User {
   firstName: string;
   lastName: string;
   userName: string;
-  avatarBase64: string,
-  nationalCode: number,
-  twoFactorEnabled: boolean,
-  type: boolean
-  // هر چیزی که از API میاد اینجا تعریف کن
+  avatarBase64: string;
+  nationalCode: number;
+  twoFactorEnabled: boolean;
+  type: boolean;
 }
 
 interface UserContextType {
@@ -18,28 +18,30 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    fetch("https://gw.tehrantc.com/ssotest/api/v1/User/GetCurrentUser", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Not logged in");
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data.data);
-      })
-      .catch(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get("/v1/User/GetCurrentUser", {
+          withCredentials: true,
+        });
+        setUser(res.data.data);
+      } catch (error) {
         setUser(null);
-      });
+      }
+    };
+
+    fetchUser();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 

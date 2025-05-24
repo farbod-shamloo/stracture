@@ -1,7 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../../../services/Users";
 
-const actionsConfig = [
+import { toast } from "react-toastify";
+
+const actionsConfig = (onDelete) => [
   {
     icon: "fa-shield-keyhole",
     title: "دسترسی‌ها",
@@ -26,9 +29,17 @@ const actionsConfig = [
     icon: "fa-trash-can",
     title: "حذف",
     className: "text-red-500",
-    onClick: (item, navigate, onDelete) => onDelete?.(item),
+    onClick: async (item) => {
+      try {
+        await deleteUser(item.id);
+        toast.success(`کاربر با موفقیت حذف شد`);
+        onDelete?.(item);
+      } catch (error) {
+        toast.error("خطا در حذف کاربر");
+        console.error("خطا در حذف کاربر:", error);
+      }
+    },
   },
- 
 ];
 
 function Actions({ item, onDelete }) {
@@ -36,19 +47,21 @@ function Actions({ item, onDelete }) {
 
   return (
     <div className="text-[22px] flex justify-center items-center gap-4">
-      {actionsConfig.map(({ icon, title, onClick, className }, index) => (
-        <div key={index} className="relative group">
-          <button
-            onClick={() => onClick(item, navigate, onDelete)}
-            className={className}
-          >
-            <i className={`fa-light ${icon}`}></i>
-          </button>
-          <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
-            {title}
+      {actionsConfig(onDelete).map(
+        ({ icon, title, onClick, className }, index) => (
+          <div key={index} className="relative group">
+            <button
+              onClick={() => onClick(item, navigate)}
+              className={className}
+            >
+              <i className={`fa-light ${icon}`}></i>
+            </button>
+            <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-md whitespace-nowrap z-10">
+              {title}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      )}
     </div>
   );
 }

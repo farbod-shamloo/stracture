@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { CloseOutlined } from "@ant-design/icons";
-
-import dayjs from "dayjs";
-
-import axios from "axios";
 import {
   Button,
   Form,
@@ -18,46 +13,26 @@ import {
   Upload,
   message,
   Drawer,
-  notification ,
+  notification,
   Select,
 } from "antd";
 
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
-
-import { InboxOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-
-import { submitUser } from "../../../services/PostUser";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import api from "../../../services/axios";
-import FilterUser from "../../../services/FilterUser";
+// API function
+import { getUserById, submitUser } from "../../../services/Users";
 import AllowedIPInput from "./Ip";
-import { getUserById } from "../../../services/GetUserById";
+import Icon, { CloseOutlined, InboxOutlined } from "@ant-design/icons";
 
-const { Option } = Select;
-const { Dragger } = Upload;
+const reverseGenderMap: Record<string, string> = {
+  "1": "مرد",
+  "2": "زن",
+  "0": "دیگر",
+};
 
-const { Text } = Typography;
-
-const AddEditUser = () => {
-  const { id } = useParams();
-  const isEditMode = !!id;
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [nationalCodeValue, setNationalCodeValue] = useState("");
-  const [userType, setUserType] = useState("شهروند");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [enabled, setEnabled] = useState(false);
-
-  console.log("id params", id);
-
-  const reverseGenderMap: Record<string, string> = {
-    "1": "مرد",
-    "2": "زن",
-    "0": "دیگر",
-  };
-
-  const reverseStatusMap: Record<string, string> = {
+const reverseStatusMap: Record<string, string> = {
   "0": "غیرفعال",
   "1": "فعال",
 };
@@ -68,81 +43,77 @@ const reverseTypeMap: Record<string, string> = {
   "2": "ldap",
 };
 
+const AddEditUser = () => {
+  const { id } = useParams();
+  const isEditMode = !!id;
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [nationalCodeValue, setNationalCodeValue] = useState("");
+  const [enabled, setEnabled] = useState(false);
+  const [userType, setUserType] = useState("شهروند");
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
+  
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ["user", id],
+    queryFn: () => getUserById(id),
+    enabled: !!id, // فقط زمانی که id هست، اجرا بشه
+  });
 
- useEffect(() => {
-  if (!id) return;
-
-  const fetchData = async () => {
-    try {
-      const user = await getUserById(id);
-
+ 
+  useEffect(() => {
+    if (userData) {
       form.setFieldsValue({
-        nationalCode: user.nationalCode,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        fatherName: user.fatherName,
-        mobile: user.mobile,
-        birthDate: user.birthDate ? dayjs(user.birthDate) : null,
-        email: user.email,
-        gender: reverseGenderMap[user.gender],
-        status: reverseStatusMap[user.status] || user.status,
-        userType: reverseTypeMap[user.type] || user.type,
-        userName: user.userName,
-        twoFactorEnabled: user.twoFactorEnabled,
-        smsWebServiceAccess:user.smsWebServiceAccess,
-   allowedLoginStartTime: user.allowedLoginStartTime
-    ? dayjs(user.allowedLoginStartTime, "HH:mm")
-    : null,
-  allowedLoginEndTime: user.allowedLoginEndTime
-    ? dayjs(user.allowedLoginEndTime, "HH:mm")
-    : null,
-
+        nationalCode: userData.nationalCode || "",
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        fatherName: userData.fatherName || "",
+        mobile: userData.mobile || "",
+        birthDate: userData.birthDate ? dayjs(userData.birthDate) : null,
+        email: userData.email || "",
+        gender: reverseGenderMap[userData.gender] || "",
+        status: reverseStatusMap[userData.status] || "",
+        userType: reverseTypeMap[userData.type] || "",
+        userName: userData.userName || "",
+        twoFactorEnabled: userData.twoFactorEnabled || false,
+        smsWebServiceAccess: userData.smsWebServiceAccess || false,
+        allowedLoginStartTime: userData.allowedLoginStartTime
+          ? dayjs(userData.allowedLoginStartTime, "HH:mm")
+          : null,
+        allowedLoginEndTime: userData.allowedLoginEndTime
+          ? dayjs(userData.allowedLoginEndTime, "HH:mm")
+          : null,
       });
 
-      setNationalCodeValue(user.nationalCode);
-      setUserType(user.userType);
-    } catch (err) {
-      console.error("Error loading user data:", err);
+      setNationalCodeValue(userData.nationalCode);
+      setUserType(userData.userType);
+    }
+  }, [userData, form]);
+
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    try {
+      const response = await submitUser({ isEditMode, id, values });
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(
+          isEditMode
+            ? "کاربر با موفقیت ویرایش شد!"
+            : "کاربر با موفقیت اضافه شد!"
+        );
+        navigate("/panel/users");
+      } else {
+        toast.error("خطا در انجام عملیات");
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "خطای ناشناخته هنگام ارسال اطلاعات";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
-
-  fetchData();
-}, [id]);
-
- const onFinish = async (values) => {
-  setLoading(true);
-  try {
-    const response = await submitUser({ isEditMode, id, values });
-
-    if (response.status === 200 || response.status === 201) {
-      notification.success({
-        message: "عملیات موفق",
-        description: isEditMode
-          ? "کاربر با موفقیت ویرایش شد!"
-          : "کاربر با موفقیت اضافه شد!",
-        placement: "topRight",
-      });
-
-      navigate("/panel/users");
-    } else {
-      notification.error({
-        message: "خطا",
-        description: "خطا در انجام عملیات",
-        placement: "topRight",
-      });
-    }
-  } catch (error) {
-    console.error("Axios error response data:", error.response?.data);
-    notification.error({
-      message: "خطا در ارتباط با سرور",
-      description: "لطفاً اتصال اینترنت یا سرور را بررسی کنید.",
-      placement: "topRight",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
 
   const beforeUpload = (file) => {
     const isValidType = file.type === "image/png" || file.type === "image/jpeg";
@@ -175,6 +146,7 @@ const reverseTypeMap: Record<string, string> = {
           بازگشت
         </button>
       </div>
+
       <Form
         form={form}
         layout="vertical"
@@ -214,7 +186,7 @@ const reverseTypeMap: Record<string, string> = {
                 form.setFieldsValue({ nationalCode: val });
               }}
               suffix={`${nationalCodeValue.length}/10`}
-              inputMode="numeric" 
+              inputMode="numeric"
               pattern="[0-9]*"
             />
           </Form.Item>
@@ -391,10 +363,7 @@ const reverseTypeMap: Record<string, string> = {
                 label={<label style={{ fontSize: "12px" }}>نام کاربری</label>}
                 rules={[
                   { required: true, message: "لطفاً نام کاربری را وارد کنید" },
-                  {
-                    pattern: /^[0-9]+$/,
-                    message: "نام کاربری باید فقط عدد باشد",
-                  },
+                 
                 ]}
               >
                 <Input
@@ -422,7 +391,6 @@ const reverseTypeMap: Record<string, string> = {
                       style={{ backgroundColor: "#fafafa", padding: "8px" }}
                     />
                   </Form.Item>
-
                 </>
               )}
             </div>
@@ -455,9 +423,10 @@ const reverseTypeMap: Record<string, string> = {
               </Form.Item>
             </div>
 
-         {!isEditMode && (<>
-         <div style={{flex: 1}}>
-             <Form.Item
+            {!isEditMode && (
+              <>
+                <div style={{ flex: 1 }}>
+                  <Form.Item
                     name="password"
                     label={<label style={{ fontSize: "12px" }}>رمز عبور</label>}
                     rules={[
@@ -471,54 +440,56 @@ const reverseTypeMap: Record<string, string> = {
                       style={{ backgroundColor: "#fafafa", padding: "8px" }}
                     />
                   </Form.Item>
+                </div>
+              </>
+            )}
           </div>
-         
-         </>)} 
+
+          <div className="flex justify-between w-[70%] items-center gap-6">
+            <Form.Item
+              label="تعیین نوع ساعات محدودیت ورود"
+              className="mb-0"
+              name="loginTimePermit"
+            >
+              <Switch
+                checked={enabled}
+                onChange={setEnabled}
+                checkedChildren="مجاز به ورود در ساعات معین"
+                unCheckedChildren="عدم مجاز به ورود در ساعات معین"
+                style={{ minWidth: 180 }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"}
+              className="flex-1"
+              name="allowedLoginStartTime"
+            >
+              <TimePicker
+                style={{
+                  width: "100%",
+                  backgroundColor: "#fafafa",
+                  padding: "8px",
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"
+              }
+              className="flex-1"
+              name="allowedLoginEndTime"
+            >
+              <TimePicker
+                style={{
+                  width: "100%",
+                  backgroundColor: "#fafafa",
+                  padding: "8px",
+                }}
+              />
+            </Form.Item>
           </div>
-
-       <div className="flex justify-between w-[70%] items-center gap-6">
-  <Form.Item
-    label="تعیین نوع ساعات محدودیت ورود"
-    className="mb-0"
-    name="loginTimePermit"
-  >
-    <Switch
-      checked={enabled}
-      onChange={setEnabled}
-      checkedChildren="مجاز به ورود در ساعات معین"
-      unCheckedChildren="عدم مجاز به ورود در ساعات معین"
-      style={{ minWidth: 180 }}
-    />
-  </Form.Item>
-
-  <Form.Item
-    label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"}
-    className="flex-1"
-    name="allowedLoginStartTime"
-  >
-    <TimePicker
-      style={{
-        width: "100%",
-        backgroundColor: "#fafafa",
-        padding: "8px",
-      }}
-    />
-  </Form.Item>
-
-  <Form.Item
-    label={enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"}
-    className="flex-1"
-    name="allowedLoginEndTime"
-  >
-    <TimePicker
-      style={{
-        width: "100%",
-        backgroundColor: "#fafafa",
-        padding: "8px",
-      }}
-    />
-  </Form.Item>
-</div>
 
           <AllowedIPInput />
         </div>
@@ -530,7 +501,7 @@ const reverseTypeMap: Record<string, string> = {
                 اطلاعات سازمانی
               </Divider>
             </div>
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 md:col-span-2 flex justify-between">
               <div>
                 <span>سمت ها</span>
                 <span
@@ -539,6 +510,12 @@ const reverseTypeMap: Record<string, string> = {
                 >
                   راهنما
                 </span>
+              </div>
+
+              <div className=" flex-columns text-center items-center justify-between">
+                <i className="fa-solid fa-user-check text-gray-400 text-[3rem]"></i>
+                <p className="mt-3">برای این کاربر سمت سازمانی ثبت نشده است.</p>
+                <button className="mt-3 border px-5 py-1">سمت جدید</button>
               </div>
             </div>
           </>
@@ -692,7 +669,6 @@ const reverseTypeMap: Record<string, string> = {
 
         <hr className="text-gray-300" />
 
-        
         <div className="flex flex-col items-center justify-center text-center pt-10">
           <Icon
             icon="fluent:layer-diagonal-person-20-regular"

@@ -52,7 +52,7 @@ const AllowedIPInput = () => {
             />
           ) : (
             <Button
-            style={{ padding: '17px' }}
+            style={{ padding: "17px", paddingTop:"20px" }}
               type="dashed"
               size="small"
               icon={<PlusOutlined />}
