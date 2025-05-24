@@ -59,7 +59,7 @@ const AddEditUser = () => {
   const { data: userData, isLoading } = useQuery({
     queryKey: ["user", id],
     queryFn: () => getUserById(id),
-    enabled: !!id, // فقط زمانی که id هست، اجرا بشه
+    enabled: !!id, 
   });
 
  

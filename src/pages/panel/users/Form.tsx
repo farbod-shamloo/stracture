@@ -1,5 +1,15 @@
 import React from "react";
-import { Form, Input, Button, Divider, Radio, DatePicker, Upload, Switch, TimePicker } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Divider,
+  Radio,
+  DatePicker,
+  Upload,
+  Switch,
+  TimePicker,
+} from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import AllowedIPInput from "./Ip";
 
@@ -25,7 +35,11 @@ const FormComponent = ({
       style={{ rowGap: "8px" }}
     >
       <div className="col-span-1 md:col-span-4">
-        <Divider orientation="right" orientationMargin="0" sx={{ fontSize: "12px" }}>
+        <Divider
+          orientation="right"
+          orientationMargin="0"
+          sx={{ fontSize: "12px" }}
+        >
           اطلاعات عمومی
         </Divider>
       </div>
@@ -149,14 +163,22 @@ const FormComponent = ({
             </Radio.Group>
           </Form.Item>
 
-          <Form.Item name="twoFactorEnabled" label="ورود دو مرحله" style={{ flex: 1 }}>
+          <Form.Item
+            name="twoFactorEnabled"
+            label="ورود دو مرحله"
+            style={{ flex: 1 }}
+          >
             <Radio.Group>
               <Radio value={true}>فعال</Radio>
               <Radio value={false}>غیرفعال</Radio>
             </Radio.Group>
           </Form.Item>
 
-          <Form.Item name="smsWebServiceAccess" label="دسترسی به وب سرویس" style={{ flex: 1 }}>
+          <Form.Item
+            name="smsWebServiceAccess"
+            label="دسترسی به وب سرویس"
+            style={{ flex: 1 }}
+          >
             <Radio.Group>
               <Radio value={true}>دارد</Radio>
               <Radio value={false}>ندارد</Radio>
@@ -173,11 +195,20 @@ const FormComponent = ({
         </div>
 
         <div style={{ display: "flex", gap: "16px" }}>
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
             <Form.Item
               name="userName"
               label="نام کاربری"
-              rules={[{ required: true, message: "لطفاً نام کاربری را وارد کنید" }]}
+              rules={[
+                { required: true, message: "لطفاً نام کاربری را وارد کنید" },
+              ]}
             >
               <Input
                 style={{ backgroundColor: "#fafafa", padding: "8px" }}
@@ -190,22 +221,32 @@ const FormComponent = ({
               <Form.Item
                 name="passwordRepeat"
                 label="تکرار رمز عبور"
-                rules={[{ required: true, message: "لطفاً رمز عبور را وارد کنید" }]}
+                rules={[
+                  { required: true, message: "لطفاً رمز عبور را وارد کنید" },
+                ]}
               >
-                <Input.Password style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+                <Input.Password
+                  style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                />
               </Form.Item>
             )}
           </div>
 
           <div style={{ flex: 1 }}>
             <Form.Item name="sabtAhvalEstelam" label="استعلام ثبت احوال">
-              <Input disabled style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+              <Input
+                disabled
+                style={{ backgroundColor: "#fafafa", padding: "8px" }}
+              />
             </Form.Item>
           </div>
 
           <div style={{ flex: 1 }}>
             <Form.Item name="shahkarEstelam" label="استعلام شاهکار">
-              <Input disabled style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+              <Input
+                disabled
+                style={{ backgroundColor: "#fafafa", padding: "8px" }}
+              />
             </Form.Item>
           </div>
 
@@ -214,9 +255,13 @@ const FormComponent = ({
               <Form.Item
                 name="password"
                 label="رمز عبور"
-                rules={[{ required: true, message: "لطفاً رمز عبور را وارد کنید" }]}
+                rules={[
+                  { required: true, message: "لطفاً رمز عبور را وارد کنید" },
+                ]}
               >
-                <Input.Password style={{ backgroundColor: "#fafafa", padding: "8px" }} />
+                <Input.Password
+                  style={{ backgroundColor: "#fafafa", padding: "8px" }}
+                />
               </Form.Item>
             </div>
           )}
@@ -268,7 +313,6 @@ const FormComponent = ({
 
         <AllowedIPInput />
 
-        {/* اطلاعات سازمانی */}
         {userType === "سازمانی" && (
           <>
             <div className="col-span-1 md:col-span-4 text-right">
@@ -276,7 +320,7 @@ const FormComponent = ({
                 اطلاعات سازمانی
               </Divider>
             </div>
-            <div className="col-span-1 md:col-span-2 flex justify-between">
+            <div className="col-span-1 md:col-span-2">
               <div>
                 <span>سمت ها</span>
                 <span
@@ -302,71 +346,80 @@ const FormComponent = ({
           </Divider>
         </div>
 
-        <div className="col-span-1 md:col-span-2">
-          <Form.Item
-            name="avatarFile"
-            label="تصویر کاربر"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-          >
-            <Upload.Dragger
-              name="file"
-              multiple={false}
-              maxCount={1}
-              accept=".png,.jpg,.jpeg"
-              listType="picture"
-              beforeUpload={() => false}
-              showUploadList={{
-                showPreviewIcon: false,
-                showDownloadIcon: false,
-                showRemoveIcon: true,
-              }}
-              className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
-            >
-              <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
-                <InboxOutlined className="text-4xl text-gray-400" />
-                <div className="font-semibold">برای بارگذاری کلیک کنید یا فایل را بکشید</div>
-                <div className="text-sm text-gray-500">
-                  پسوندهای مجاز: <span className="font-medium text-gray-600">.png, .jpg</span>
-                </div>
-                <div className="text-sm text-gray-500">حداکثر حجم فایل: 320 KB</div>
-              </div>
-            </Upload.Dragger>
-          </Form.Item>
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <Form.Item
+      name="avatarFile"
+      label="تصویر کاربر"
+      valuePropName="fileList"
+      getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+    >
+      <Upload.Dragger
+        name="file"
+        multiple={false}
+        maxCount={1}
+        accept=".png,.jpg,.jpeg"
+        listType="picture"
+        beforeUpload={() => false}
+        showUploadList={{
+          showPreviewIcon: false,
+          showDownloadIcon: false,
+          showRemoveIcon: true,
+        }}
+        className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
+      >
+        <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
+          <InboxOutlined className="text-4xl text-gray-400" />
+          <div className="font-semibold">
+            برای بارگذاری کلیک کنید یا فایل را بکشید
+          </div>
+          <div className="text-sm text-gray-500">
+            پسوندهای مجاز:{" "}
+            <span className="font-medium text-gray-600">.png, .jpg</span>
+          </div>
+          <div className="text-sm text-gray-500">حداکثر حجم فایل: 320 KB</div>
         </div>
+      </Upload.Dragger>
+    </Form.Item>
+  </div>
 
-        <div className="col-span-1 md:col-span-2">
-          <Form.Item
-            name="SignFile"
-            label="تصویر امضا"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-          >
-            <Upload.Dragger
-              name="file"
-              multiple={false}
-              beforeUpload={() => false}
-              maxCount={1}
-              accept=".png,.jpg,.jpeg"
-              listType="picture"
-              showUploadList={{
-                showPreviewIcon: false,
-                showDownloadIcon: false,
-                showRemoveIcon: true,
-              }}
-              className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
-            >
-              <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
-                <InboxOutlined className="text-4xl text-gray-400" />
-                <div className="font-semibold">برای بارگذاری کلیک کنید یا فایل را بکشید</div>
-                <div className="text-sm text-gray-500">
-                  پسوندهای مجاز: <span className="font-medium text-gray-600">.png, .jpg</span>
-                </div>
-                <div className="text-sm text-gray-500">حداکثر حجم فایل: 320 KB</div>
-              </div>
-            </Upload.Dragger>
-          </Form.Item>
+  <div>
+    <Form.Item
+      name="SignFile"
+      label="تصویر امضا"
+      valuePropName="fileList"
+      getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+    >
+      <Upload.Dragger
+        name="file"
+        multiple={false}
+        beforeUpload={() => false}
+        maxCount={1}
+        accept=".png,.jpg,.jpeg"
+        listType="picture"
+        showUploadList={{
+          showPreviewIcon: false,
+          showDownloadIcon: false,
+          showRemoveIcon: true,
+        }}
+        className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
+      >
+        <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
+          <InboxOutlined className="text-4xl text-gray-400" />
+          <div className="font-semibold">
+            برای بارگذاری کلیک کنید یا فایل را بکشید
+          </div>
+          <div className="text-sm text-gray-500">
+            پسوندهای مجاز:{" "}
+            <span className="font-medium text-gray-600">.png, .jpg</span>
+          </div>
+          <div className="text-sm text-gray-500">حداکثر حجم فایل: 320 KB</div>
         </div>
+      </Upload.Dragger>
+    </Form.Item>
+  </div>
+</div>
+
       </div>
 
       {/* دکمه‌های ارسال */}
@@ -388,7 +441,11 @@ const FormComponent = ({
           style={{ backgroundColor: "#0d56a3", padding: "19px 50px" }}
           loading={loading}
         >
-          {loading ? "در حال ارسال..." : isEditMode ? "ویرایش کاربر" : "ثبت و ذخیره"}
+          {loading
+            ? "در حال ارسال..."
+            : isEditMode
+            ? "ویرایش کاربر"
+            : "ثبت و ذخیره"}
         </Button>
       </div>
     </Form>
