@@ -63,8 +63,8 @@ const [filters, setFilters] = useState({
     queryKey: ["users", searchKey, currentPage, itemsPerPage, JSON.stringify(filters)],
     queryFn: () =>
       FilterUser(searchKey, currentPage + 1, itemsPerPage, filters),
-    keepPreviousData: true,
-    staleTime: 5 * 60 * 1000,
+
+
     onError: (err) => {
       console.error(err);
     },

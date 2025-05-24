@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
+import { deleteUser } from "../../../services/DeleteUser"; // مسیر دهی به فایل deleteUser.ts
 
 const actionsConfig = [
   {
@@ -20,15 +22,25 @@ const actionsConfig = [
   {
     icon: "fa-pen-to-square",
     title: "ویرایش",
-    onClick: (item, navigate) => navigate(`/panel/users/edit/${item.id}`),
+    onClick: (item, navigate) => navigate(`/panel/users/edit/${item.userId}`),
   },
   {
     icon: "fa-trash-can",
     title: "حذف",
     className: "text-red-500",
-    onClick: (item, navigate, onDelete) => onDelete?.(item),
+    onClick: async (item, navigate, onDelete) => {
+      try {
+        const confirmDelete = window.confirm(`آیا از حذف "${item.firstName} ${item.lastName}" مطمئن هستی؟`);
+        if (!confirmDelete) return;
+
+        await deleteUser(item.userId);
+        message.success("کاربر با موفقیت حذف شد");
+        onDelete?.(item); // می‌تونه برای آپدیت لیست باشه
+      } catch (error) {
+        message.error("خطا در حذف کاربر");
+      }
+    },
   },
- 
 ];
 
 function Actions({ item, onDelete }) {

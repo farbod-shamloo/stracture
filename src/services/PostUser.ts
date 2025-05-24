@@ -13,6 +13,17 @@ const genderMap: Record<string, string> = {
   دیگر: "0",
 };
 
+const statusMap: Record<string, string> = {
+  فعال: "1",
+  غیرفعال: "0",
+};
+
+const typeMap: Record<string, string> = {
+  شهروند: "0",
+  سازمانی: "1",
+  ldap: "2",
+};
+
 export const submitUser = async ({ isEditMode, id, values }: UserPayload) => {
   const formData = new FormData();
 
@@ -20,38 +31,48 @@ export const submitUser = async ({ isEditMode, id, values }: UserPayload) => {
     formData.append("Id", id);
   }
 
-  formData.append("UserName", values.userName || "");
+  // مپ کلیدها به مپ مقدارها
+  const maps: Record<string, Record<string, string>> = {
+    gender: genderMap,
+    status: statusMap,
+    userType: typeMap,
+    EstekhdamUserType: typeMap,
+  };
 
-  if (!isEditMode) {
-    formData.append("Password", values.password || "");
-  }
+  Object.entries(values).forEach(([key, val]) => {
+    let valueToAppend = val;
 
-  formData.append("FirstName", values.firstName || "");
-  formData.append("LastName", values.lastName || "");
-  formData.append("FatherName", values.fatherName || "");
-  formData.append("Gender", genderMap[values.gender] ?? "0");
-  formData.append("Email", values.email || "");
-  formData.append("Mobile", values.mobile || "");
-  formData.append("NationalCode", values.nationalCode || "");
-//   formData.append("Status", values.status || "");
+    if (maps[key]) {
+      if (typeof val === "string" && maps[key][val] !== undefined) {
+        valueToAppend = maps[key][val];
+      }
+    } else if (key === "twoFactorEnabled") {
+      // بولین رو به رشته تبدیل کن
+      valueToAppend = val ? "true" : "false";
+    } else if (key === "birthDate" && val) {
+      // تاریخ رو به فرمت yyyy-mm-dd تبدیل کن
+      valueToAppend = val.toISOString().split("T")[0];
+    }
 
-  formData.append(
-    "BirthDate",
-    values.birthDate ? values.birthDate.toISOString().split("T")[0] : ""
-  );
 
-  // برای دیباگ
+    if (key === "password" && isEditMode) return;
+
+    formData.append(key, valueToAppend ?? "");
+  });
+
   for (const [key, value] of formData.entries()) {
     console.log(`${key}: ${value}`);
   }
 
- 
-
   const method = isEditMode ? axios.put : axios.post;
 
-  const response = await method("https://gw.tehrantc.com/ssotest/api/v1/User", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const response = await method(
+    "https://gw.tehrantc.com/ssotest/api/v1/User",
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
 
   return response;
 };

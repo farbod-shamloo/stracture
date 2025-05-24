@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
 
+import dayjs from "dayjs";
+
 import axios from "axios";
 import {
   Button,
@@ -55,6 +57,19 @@ const AddEditUser = () => {
     "0": "دیگر",
   };
 
+  const reverseStatusMap: Record<string, string> = {
+  "0": "غیرفعال",
+  "1": "فعال",
+};
+
+const reverseTypeMap: Record<string, string> = {
+  "0": "سازمانی",
+  "1": "شهروند",
+  "2": "ldap",
+};
+
+
+
  useEffect(() => {
   if (!id) return;
 
@@ -68,11 +83,21 @@ const AddEditUser = () => {
         lastName: user.lastName,
         fatherName: user.fatherName,
         mobile: user.mobile,
-        // birthDate: user.birthDate ? dayjs(user.birthDate) : null,
+        birthDate: user.birthDate ? dayjs(user.birthDate) : null,
         email: user.email,
         gender: reverseGenderMap[user.gender],
-        userType: user.userType,
+        status: reverseStatusMap[user.status] || user.status,
+        userType: reverseTypeMap[user.type] || user.type,
         userName: user.userName,
+        twoFactorEnabled: user.twoFactorEnabled,
+        smsWebServiceAccess:user.smsWebServiceAccess,
+   allowedLoginStartTime: user.allowedLoginStartTime
+    ? dayjs(user.allowedLoginStartTime, "HH:mm")
+    : null,
+  allowedLoginEndTime: user.allowedLoginEndTime
+    ? dayjs(user.allowedLoginEndTime, "HH:mm")
+    : null,
+
       });
 
       setNationalCodeValue(user.nationalCode);
@@ -297,7 +322,7 @@ const AddEditUser = () => {
             </Form.Item>
 
             <Form.Item
-              name="TwoFactorEnabled"
+              name="twoFactorEnabled"
               label={
                 <label style={{ fontSize: "12px", fontWeight: "500" }}>
                   ورود دو مرحله
@@ -309,13 +334,13 @@ const AddEditUser = () => {
                 onChange={(e) => setUserType(e.target.value)}
                 value={userType}
               >
-                <Radio value="فعال">فعال</Radio>
-                <Radio value="غیرفعال">غیرفعال</Radio>
+                <Radio value={true}>فعال</Radio>
+                <Radio value={false}>غیرفعال</Radio>
               </Radio.Group>
             </Form.Item>
 
             <Form.Item
-              name="SMSWebServiceAccess"
+              name="smsWebServiceAccess"
               label={
                 <label style={{ fontSize: "12px", fontWeight: "500" }}>
                   درسترسی به وب سرویس
@@ -327,8 +352,8 @@ const AddEditUser = () => {
                 onChange={(e) => setUserType(e.target.value)}
                 value={userType}
               >
-                <Radio value="دارد">دارد</Radio>
-                <Radio value="نندارد">ندارد</Radio>
+                <Radio value={true}>دارد</Radio>
+                <Radio value={false}>ندارد</Radio>
               </Radio.Group>
             </Form.Item>
 
@@ -404,7 +429,7 @@ const AddEditUser = () => {
 
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="type1"
+                name="sabtAhvalEstelam"
                 label={
                   <label style={{ fontSize: "12px" }}>استعلام ثبت احوال</label>
                 }
@@ -418,7 +443,7 @@ const AddEditUser = () => {
 
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="type2"
+                name="shahkarEstelam"
                 label={
                   <label style={{ fontSize: "12px" }}>استعلام شاهکار</label>
                 }
@@ -451,47 +476,49 @@ const AddEditUser = () => {
          </>)} 
           </div>
 
-          <div className="flex justify-between w-[70%] items-center gap-6">
-            <Form.Item label="تعیین نوع ساعات محدودیت ورود" className="mb-0">
-              <Switch
-                checked={enabled}
-                onChange={setEnabled}
-                checkedChildren="مجاز به ورود در ساعات معین"
-                unCheckedChildren="عدم مجاز به ورود در ساعات معین"
-                style={{ minWidth: 180 }}
-              />
-            </Form.Item>
+       <div className="flex justify-between w-[70%] items-center gap-6">
+  <Form.Item
+    label="تعیین نوع ساعات محدودیت ورود"
+    className="mb-0"
+    name="loginTimePermit"
+  >
+    <Switch
+      checked={enabled}
+      onChange={setEnabled}
+      checkedChildren="مجاز به ورود در ساعات معین"
+      unCheckedChildren="عدم مجاز به ورود در ساعات معین"
+      style={{ minWidth: 180 }}
+    />
+  </Form.Item>
 
-            <Form.Item
-              label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"}
-              className="flex-1"
-            >
-              <TimePicker
-                disabled={!enabled}
-                style={{
-                  width: "100%",
-                  backgroundColor: "#fafafa",
-                  padding: "8px",
-                }}
-              />
-            </Form.Item>
+  <Form.Item
+    label={enabled ? "ساعت مجاز آغاز ورود" : "ساعت غیرمجاز آغاز ورود"}
+    className="flex-1"
+    name="allowedLoginStartTime"
+  >
+    <TimePicker
+      style={{
+        width: "100%",
+        backgroundColor: "#fafafa",
+        padding: "8px",
+      }}
+    />
+  </Form.Item>
 
-            <Form.Item
-              label={
-                enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"
-              }
-              className="flex-1"
-            >
-              <TimePicker
-                disabled={!enabled}
-                style={{
-                  width: "100%",
-                  backgroundColor: "#fafafa",
-                  padding: "8px",
-                }}
-              />
-            </Form.Item>
-          </div>
+  <Form.Item
+    label={enabled ? "ساعت مجاز پایان ورود" : "ساعت غیرمجاز پایان ورود"}
+    className="flex-1"
+    name="allowedLoginEndTime"
+  >
+    <TimePicker
+      style={{
+        width: "100%",
+        backgroundColor: "#fafafa",
+        padding: "8px",
+      }}
+    />
+  </Form.Item>
+</div>
 
           <AllowedIPInput />
         </div>
@@ -525,7 +552,7 @@ const AddEditUser = () => {
           </div>
           <div className="col-span-1 md:col-span-2">
             <Form.Item
-              name="userImage"
+              name="avatarFile"
               label="تصویر کاربر"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
@@ -565,7 +592,7 @@ const AddEditUser = () => {
 
           <div className="col-span-1 md:col-span-2">
             <Form.Item
-              name="signatureImage"
+              name="SignFile"
               label="تصویر امضا"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
@@ -665,7 +692,7 @@ const AddEditUser = () => {
 
         <hr className="text-gray-300" />
 
-        {/* <i className="fa-solid fa-user-gear text-7xl text-info text-[3rem] text-[#088f99]"></i> */}
+        
         <div className="flex flex-col items-center justify-center text-center pt-10">
           <Icon
             icon="fluent:layer-diagonal-person-20-regular"

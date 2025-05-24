@@ -58,7 +58,7 @@ const AllowedIPInput = () => {
               icon={<PlusOutlined />}
               onClick={() => setInputVisible(true)}
             >
-              {/* اگر دوست داری می‌تونی متن داخل دکمه هم بذاری، یا خالی بذار */}
+            
             </Button>
           )}
         </div>
