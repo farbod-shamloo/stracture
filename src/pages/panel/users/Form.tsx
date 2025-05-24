@@ -54,6 +54,7 @@ const FormComponent = ({
           ]}
         >
           <Input
+            disabled={isEditMode}
             style={{ backgroundColor: "#fafafa", padding: "8px" }}
             maxLength={10}
             value={nationalCodeValue}
@@ -346,80 +347,87 @@ const FormComponent = ({
           </Divider>
         </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div>
-    <Form.Item
-      name="avatarFile"
-      label="تصویر کاربر"
-      valuePropName="fileList"
-      getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-    >
-      <Upload.Dragger
-        name="file"
-        multiple={false}
-        maxCount={1}
-        accept=".png,.jpg,.jpeg"
-        listType="picture"
-        beforeUpload={() => false}
-        showUploadList={{
-          showPreviewIcon: false,
-          showDownloadIcon: false,
-          showRemoveIcon: true,
-        }}
-        className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
-      >
-        <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
-          <InboxOutlined className="text-4xl text-gray-400" />
-          <div className="font-semibold">
-            برای بارگذاری کلیک کنید یا فایل را بکشید
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Form.Item
+              name="avatarFile"
+              label="تصویر کاربر"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+            >
+              <Upload.Dragger
+                name="file"
+                multiple={false}
+                maxCount={1}
+                accept=".png,.jpg,.jpeg"
+                listType="picture"
+                beforeUpload={() => false}
+                showUploadList={{
+                  showPreviewIcon: false,
+                  showDownloadIcon: false,
+                  showRemoveIcon: true,
+                }}
+                className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
+              >
+                <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
+                  <InboxOutlined className="text-4xl text-gray-400" />
+                  <div className="font-semibold">
+                    برای بارگذاری کلیک کنید یا فایل را بکشید
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    پسوندهای مجاز:{" "}
+                    <span className="font-medium text-gray-600">
+                      .png, .jpg
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    حداکثر حجم فایل: 320 KB
+                  </div>
+                </div>
+              </Upload.Dragger>
+            </Form.Item>
           </div>
-          <div className="text-sm text-gray-500">
-            پسوندهای مجاز:{" "}
-            <span className="font-medium text-gray-600">.png, .jpg</span>
-          </div>
-          <div className="text-sm text-gray-500">حداکثر حجم فایل: 320 KB</div>
-        </div>
-      </Upload.Dragger>
-    </Form.Item>
-  </div>
 
-  <div>
-    <Form.Item
-      name="SignFile"
-      label="تصویر امضا"
-      valuePropName="fileList"
-      getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-    >
-      <Upload.Dragger
-        name="file"
-        multiple={false}
-        beforeUpload={() => false}
-        maxCount={1}
-        accept=".png,.jpg,.jpeg"
-        listType="picture"
-        showUploadList={{
-          showPreviewIcon: false,
-          showDownloadIcon: false,
-          showRemoveIcon: true,
-        }}
-        className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
-      >
-        <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
-          <InboxOutlined className="text-4xl text-gray-400" />
-          <div className="font-semibold">
-            برای بارگذاری کلیک کنید یا فایل را بکشید
+          <div>
+            <Form.Item
+              name="SignFile"
+              label="تصویر امضا"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+            >
+              <Upload.Dragger
+                name="file"
+                multiple={false}
+                beforeUpload={() => false}
+                maxCount={1}
+                accept=".png,.jpg,.jpeg"
+                listType="picture"
+                showUploadList={{
+                  showPreviewIcon: false,
+                  showDownloadIcon: false,
+                  showRemoveIcon: true,
+                }}
+                className="!border-dashed !border-gray-300 !rounded-2xl !p-6 hover:!border-gray-400"
+              >
+                <div className="flex flex-col items-center justify-center text-center text-gray-600 space-y-2">
+                  <InboxOutlined className="text-4xl text-gray-400" />
+                  <div className="font-semibold">
+                    برای بارگذاری کلیک کنید یا فایل را بکشید
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    پسوندهای مجاز:{" "}
+                    <span className="font-medium text-gray-600">
+                      .png, .jpg
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    حداکثر حجم فایل: 320 KB
+                  </div>
+                </div>
+              </Upload.Dragger>
+            </Form.Item>
           </div>
-          <div className="text-sm text-gray-500">
-            پسوندهای مجاز:{" "}
-            <span className="font-medium text-gray-600">.png, .jpg</span>
-          </div>
-          <div className="text-sm text-gray-500">حداکثر حجم فایل: 320 KB</div>
         </div>
-      </Upload.Dragger>
-    </Form.Item>
-  </div>
-</div>
-
       </div>
 
       {/* دکمه‌های ارسال */}

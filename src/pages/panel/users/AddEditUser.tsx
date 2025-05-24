@@ -1,30 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Form,
-  Input,
-  Radio,
-  Switch,
-  DatePicker,
-  TimePicker,
-  Typography,
-  Divider,
-  Upload,
-  message,
-  Drawer,
-  notification,
-  Select,
-} from "antd";
+import { Form, Upload, message, Drawer } from "antd";
 
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 
-// API function
+
 import { getUserById, submitUser } from "../../../services/Users";
-import AllowedIPInput from "./Ip";
-import Icon, { CloseOutlined, InboxOutlined } from "@ant-design/icons";
+import Icon, { CloseOutlined } from "@ant-design/icons";
 import FormComponent from "./Form";
 
 const reverseGenderMap: Record<string, string> = {
@@ -55,16 +39,14 @@ const AddEditUser = () => {
   const [userType, setUserType] = useState("شهروند");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  
   const { data: userData, isLoading } = useQuery({
     queryKey: ["user", id],
     queryFn: () => getUserById(id),
-    enabled: !!id, 
+    enabled: !!id,
   });
-
- 
+  
   useEffect(() => {
-    if (userData) {
+   if(userData) {
       form.setFieldsValue({
         nationalCode: userData.nationalCode || "",
         firstName: userData.firstName || "",
@@ -148,7 +130,7 @@ const AddEditUser = () => {
         </button>
       </div>
 
-    <FormComponent
+      <FormComponent
         form={form}
         onFinish={onFinish}
         loading={loading}
