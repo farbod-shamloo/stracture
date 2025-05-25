@@ -53,7 +53,7 @@ export const submitUser = ({
     valueToAppend = val ? "true" : "false";
   } else if (key === "birthDate" && val) {
     valueToAppend = val.toISOString().split("T")[0];
-  } else if (key === "AvatarFileStream" || key === "avatarFile") {
+  } else if (key === "AvatarFileStream" || key === "AvatarFile") {
     valueToAppend = val[0].originFileObj;
   }
 
@@ -67,7 +67,7 @@ export const submitUser = ({
     formData.append("AvatarFile", valueToAppend ?? "");
   }
 
-  else if (key !== "AvatarFileStream" && key !== "avatarFile") {
+  else if (key !== "AvatarFileStream" && key !== "AvatarFile") {
     formData.append(key, valueToAppend ?? "");
   }
 });

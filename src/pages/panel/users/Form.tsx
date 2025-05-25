@@ -364,7 +364,7 @@ const FormComponent = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Form.Item
-              name="AvatarFileStream"
+               name={isEditMode ? "AvatarFileStream" : "AvatarFile"}
               label="تصویر کاربر"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
