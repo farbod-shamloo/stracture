@@ -108,7 +108,7 @@ const getBreadcrumbFromPath = () => {
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
-          <div className="flex items-center justify-between px-1.5">
+          <div className="flex items-center justify-between px-1.5 sticky top-0 bg-white z-50 border-b border-gray-200 pb-3">
             <div className="flex justify-start items-center mt-4">
               {isMobile && (
                 <div style={{ padding: "10px 16px" }}>
@@ -136,8 +136,9 @@ const getBreadcrumbFromPath = () => {
               padding: 24,
               minHeight: 360,
               background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-              marginTop: 16,
+              
+              // borderRadius: borderRadiusLG,
+              // marginTop: 16,
             }}
           >
             <Outlet />
