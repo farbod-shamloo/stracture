@@ -6,6 +6,7 @@ import UserTable from "../../components/common/table/UserTable";
 import { getAllByFilter } from "../../services/Users";
 import SearchBar from "../../components/common/table/SearchBar"; 
 
+
 const IndexUser: React.FC = () => {
   const columns = [
     { key: "fullName", label: "نام و نام خانوادگی" },
@@ -140,6 +141,7 @@ const IndexUser: React.FC = () => {
         totalCount={totalCount}
         onFilter={handleFilter}
       />
+
 
       <UserTable
         columns={columns}

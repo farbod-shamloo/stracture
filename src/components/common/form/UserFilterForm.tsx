@@ -44,7 +44,7 @@ const UserFilterForm = ({
     };
 
     onFilter(filterData);
-    closeModal(); // یا onClose()
+    closeModal();
   };
 
   return (
@@ -120,7 +120,7 @@ const UserFilterForm = ({
         </select>
       </div>
 
-      {/* گروه سامانه */}
+     
       <div>
         <label className="text-[13px]">گروه سامانه</label>
         <select
@@ -180,7 +180,7 @@ const UserFilterForm = ({
 </div>
 
 
-      {/* دکمه‌ها */}
+     
       <div className="flex gap-1 justify-end pt-3">
         <button
           type="button"

@@ -17,7 +17,7 @@ const actionsConfig = (onDelete) => [
   },
   {
     icon: "fa-arrow-right-to-bracket",
-    title: "ورود به حساب",
+    title: "ورود به عنوان جانشین",
     onClick: (item, navigate) => console.log("Login", item),
   },
   {

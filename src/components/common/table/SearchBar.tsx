@@ -32,10 +32,9 @@ const SearchBar = ({ onSearch,onFilter, searchValue, data , totalCount}: Props) 
     const value = e.target.value;
     setSearch(value);
 
-    // پاک کردن تایمر قبلی
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
-    // ایجاد تاخیر 1.5 ثانیه قبل از اجرای جستجو
+ 
     debounceTimeout.current = setTimeout(() => {
       runSearch(value);
     }, 1500);

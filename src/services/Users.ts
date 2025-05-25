@@ -53,6 +53,9 @@ export const submitUser = ({
         valueToAppend = val ? "true" : "false";
       } else if (key === "birthDate" && val) {
         valueToAppend = val.toISOString().split("T")[0];
+      }else if(key === "AvatarFileStream"){
+        console.log(val)
+           valueToAppend = val[0].originFileObj;
       }
 
       if (key === "password" && isEditMode) return;

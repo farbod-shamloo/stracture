@@ -21,11 +21,14 @@ const FormComponent = ({
   nationalCodeValue,
   setNationalCodeValue,
   userType,
+  userData,
   setUserType,
   enabled,
   setEnabled,
   setDrawerOpen,
 }) => {
+
+
   return (
     <Form
       form={form}
@@ -361,12 +364,13 @@ const FormComponent = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Form.Item
-              name="avatarFile"
+              name="AvatarFileStream"
               label="تصویر کاربر"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
             >
               <Upload.Dragger
+            
                 name="file"
                 multiple={false}
                 maxCount={1}
@@ -401,7 +405,7 @@ const FormComponent = ({
 
           <div>
             <Form.Item
-              name="SignFile"
+              name="signFile"
               label="تصویر امضا"
               valuePropName="fileList"
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}

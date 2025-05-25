@@ -1,8 +1,7 @@
-// layouts/PanelLayout.tsx
 import React, { useEffect, useState } from "react";
 import { Layout, Breadcrumb, theme, Button, Drawer } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SidebarContent from "../pages/Panel/Sidebar/indexSidebar";
 import AddUser from "../pages/Panel/users/AddUser";
 
@@ -13,17 +12,15 @@ const PanelLayout: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [hideSidebar, setHideSidebar] = useState(false);
-  const [selectedKey, setSelectedKey] = useState("/panel/dashboard");
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   useEffect(() => {
-    const storedKey = localStorage.getItem("selectedKey");
-    if (storedKey) setSelectedKey(storedKey);
-
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 700) {
@@ -47,8 +44,6 @@ const PanelLayout: React.FC = () => {
   }, []);
 
   const handleMenuClick = (key: string) => {
-    setSelectedKey(key);
-    localStorage.setItem("selectedKey", key);
     navigate(key);
     setShowDrawer(false);
   };
@@ -58,22 +53,27 @@ const PanelLayout: React.FC = () => {
     navigate("/");
   };
 
-  const getBreadcrumb = () => {
-    switch (selectedKey) {
-      case "/panel/dashboard":
-        return ["پنل", "کاربران"];
-      case "/panel/orders":
-        return ["پنل", "سفارشات"];
-      case "/panel/users":
-        return ["پنل", "کاربران"];
-      case "/panel/team":
-        return ["پنل", "تیم"];
-      case "/panel/files":
-        return ["پنل", "فایل‌ها"];
-      default:
-        return ["پنل"];
-    }
+const getBreadcrumbFromPath = () => {
+  const breadcrumbMap: Record<string, string> = {
+    panel: "پنل",
+    dashboard: "داشبورد",
+    users: "کاربران",
+    add: "افزودن کاربر",
+    edit: "ویرایش کاربر",
+    orders: "سامانه ها",
+    files: "فایل‌ها",
+    team: "تیم",
   };
+
+  const pathParts = location.pathname.split("/").filter(Boolean);
+
+  return pathParts
+    .filter((part) => isNaN(Number(part))) 
+    .filter((part) => !/^[0-9a-fA-F]{24}$/.test(part)) 
+    .map((part) => breadcrumbMap[part] || null)
+    .filter(Boolean); // حذف null
+};
+
 
   const sidebar = (
     <SidebarContent onMenuClick={handleMenuClick} onLogout={handleLogout} />
@@ -96,6 +96,7 @@ const PanelLayout: React.FC = () => {
           {sidebar}
         </Sider>
       )}
+
       <Drawer
         title="منو"
         placement="right"
@@ -121,13 +122,13 @@ const PanelLayout: React.FC = () => {
                 </div>
               )}
               <Breadcrumb>
-                {getBreadcrumb().map((item, index) => (
+                {getBreadcrumbFromPath().map((item, index) => (
                   <Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>
                 ))}
               </Breadcrumb>
             </div>
 
-            {selectedKey === "/panel/users" && <AddUser />}
+            {location.pathname === "/panel/users" && <AddUser />}
           </div>
 
           <div

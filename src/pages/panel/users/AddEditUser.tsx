@@ -39,14 +39,17 @@ const AddEditUser = () => {
   const [userType, setUserType] = useState("شهروند");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  
   const { data: userData, isLoading } = useQuery({
     queryKey: ["user", id],
     queryFn: () => getUserById(id),
     enabled: !!id,
   });
   
+  
   useEffect(() => {
-   if(userData) {
+    if(userData) {
+     const base64Type = userData.avatarBase64?.startsWith('/9j/') ? 'image/jpeg' : 'image/png';
       form.setFieldsValue({
         nationalCode: userData.nationalCode || "",
         firstName: userData.firstName || "",
@@ -62,11 +65,20 @@ const AddEditUser = () => {
         twoFactorEnabled: userData.twoFactorEnabled || false,
         smsWebServiceAccess: userData.smsWebServiceAccess || false,
         allowedLoginStartTime: userData.allowedLoginStartTime
-          ? dayjs(userData.allowedLoginStartTime, "HH:mm")
-          : null,
+        ? dayjs(userData.allowedLoginStartTime, "HH:mm")
+        : null,
         allowedLoginEndTime: userData.allowedLoginEndTime
-          ? dayjs(userData.allowedLoginEndTime, "HH:mm")
-          : null,
+        ? dayjs(userData.allowedLoginEndTime, "HH:mm")
+        : null,
+          AvatarFileStream: userData.avatarBase64
+    ? [{
+        uid: '-1',
+        name: 'avatar.png',
+        status: 'done',
+        url: `data:${base64Type};base64,${userData.avatarBase64}`,
+      }]
+    : [],
+       
       });
 
       setNationalCodeValue(userData.nationalCode);
@@ -142,6 +154,7 @@ const AddEditUser = () => {
         enabled={enabled}
         setEnabled={setEnabled}
         setDrawerOpen={setDrawerOpen}
+        userData={userData}
       />
       <Drawer
         placement="left"
