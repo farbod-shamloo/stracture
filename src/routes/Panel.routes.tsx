@@ -3,6 +3,7 @@ import { withSuspense } from "../components/common/withSuspense";
 
 const PanelLayout = lazy(() => import("../layout/PanelLayout"));
 const Users = lazy(() => import("../pages/panel/Users"));
+const Panel = lazy(() => import("../pages/Panel/indexPanel"));
 const Orders = lazy(() => import("../pages/Panel/Order/IndexOrders"));
 const Dash = lazy(() => import("../pages/panel/Dash"));
 const Team = lazy(() => import("../pages/Panel/Team"));
@@ -14,6 +15,10 @@ const panelRoutes = {
   element: withSuspense(PanelLayout),
   errorElement: withSuspense(ErrorLayout),
   children: [
+      {
+      path: "",
+      element: withSuspense(Panel),
+    },
     {
       path: "users",
       element: withSuspense(Users),
