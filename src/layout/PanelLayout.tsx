@@ -71,7 +71,7 @@ const getBreadcrumbFromPath = () => {
     .filter((part) => isNaN(Number(part))) 
     .filter((part) => !/^[0-9a-fA-F]{24}$/.test(part)) 
     .map((part) => breadcrumbMap[part] || null)
-    .filter(Boolean); // حذف null
+    .filter(Boolean); 
 };
 
 

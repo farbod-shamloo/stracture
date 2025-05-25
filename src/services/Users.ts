@@ -42,26 +42,35 @@ export const submitUser = ({
       EstekhdamUserType: typeMap,
     };
 
-    Object.entries(values).forEach(([key, val]) => {
-      let valueToAppend = val;
+ Object.entries(values).forEach(([key, val]) => {
+  let valueToAppend = val;
 
-      if (maps[key]) {
-        if (typeof val === "string" && maps[key][val] !== undefined) {
-          valueToAppend = maps[key][val];
-        }
-      } else if (key === "twoFactorEnabled") {
-        valueToAppend = val ? "true" : "false";
-      } else if (key === "birthDate" && val) {
-        valueToAppend = val.toISOString().split("T")[0];
-      }else if(key === "AvatarFileStream"){
-        console.log(val)
-           valueToAppend = val[0].originFileObj;
-      }
+  if (maps[key]) {
+    if (typeof val === "string" && maps[key][val] !== undefined) {
+      valueToAppend = maps[key][val];
+    }
+  } else if (key === "twoFactorEnabled") {
+    valueToAppend = val ? "true" : "false";
+  } else if (key === "birthDate" && val) {
+    valueToAppend = val.toISOString().split("T")[0];
+  } else if (key === "AvatarFileStream" || key === "avatarFile") {
+    valueToAppend = val[0].originFileObj;
+  }
 
-      if (key === "password" && isEditMode) return;
+  if (key === "password" && isEditMode) return;
 
-      formData.append(key, valueToAppend ?? "");
-    });
+  if (isEditMode && key === "AvatarFileStream") {
+    formData.append("AvatarFileStream", valueToAppend ?? "");
+  }
+
+  else if (!isEditMode && key === "AvatarFile") {
+    formData.append("AvatarFile", valueToAppend ?? "");
+  }
+
+  else if (key !== "AvatarFileStream" && key !== "avatarFile") {
+    formData.append(key, valueToAppend ?? "");
+  }
+});
 
     const method = isEditMode ? api.put : api.post;
 

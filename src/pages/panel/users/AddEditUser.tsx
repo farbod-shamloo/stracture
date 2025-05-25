@@ -73,7 +73,7 @@ const AddEditUser = () => {
           AvatarFileStream: userData.avatarBase64
     ? [{
         uid: '-1',
-        name: 'avatar.png',
+        name: 'تصویر کاربر',
         status: 'done',
         url: `data:${base64Type};base64,${userData.avatarBase64}`,
       }]
@@ -95,7 +95,9 @@ const AddEditUser = () => {
         toast.success(
           isEditMode
             ? "کاربر با موفقیت ویرایش شد!"
-            : "کاربر با موفقیت اضافه شد!"
+            : "کاربر با موفقیت اضافه شد!", {
+              position: "top-center"
+            }
         );
         navigate("/panel/users");
       } else {
@@ -104,7 +106,9 @@ const AddEditUser = () => {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "خطای ناشناخته هنگام ارسال اطلاعات";
-      toast.error(errorMessage);
+      toast.error(errorMessage , {
+        position: "top-center"
+      });
     } finally {
       setLoading(false);
     }
@@ -136,7 +140,7 @@ const AddEditUser = () => {
         </h1>
         <button
           onClick={() => navigate(-1)}
-          className="text-sm bg-gray-200 hover:bg-gray-300 px-4 py-1 rounded"
+          className="text-sm border border-gray-400 hover:border-black px-4 py-1 rounded"
         >
           بازگشت
         </button>

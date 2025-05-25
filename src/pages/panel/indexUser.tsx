@@ -43,16 +43,16 @@ const IndexUser: React.FC = () => {
     setSearchKey(urlSearch);
   }, [searchParams]);
 
-  useEffect(() => {
-    const newFilters = {
-      application: searchParams.get("application") || "",
-      userType: searchParams.get("userType") || "",
-      role: searchParams.get("role") || "",
-      applicationGroup: searchParams.get("applicationGroup") || "",
-      applicationSubGroup: searchParams.get("applicationSubGroup") || "",
-    };
-    setFilters(newFilters);
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const newFilters = {
+  //     application: searchParams.get("application") || "",
+  //     userType: searchParams.get("userType") || "",
+  //     role: searchParams.get("role") || "",
+  //     applicationGroup: searchParams.get("applicationGroup") || "",
+  //     applicationSubGroup: searchParams.get("applicationSubGroup") || "",
+  //   };
+  //   setFilters(newFilters);
+  // }, [searchParams]);
 
 
   const { data, error, isLoading } = useQuery({
@@ -137,7 +137,6 @@ const IndexUser: React.FC = () => {
       <SearchBar
         onSearch={handleSearch}
         searchValue={searchKey}
-        data={currentData}
         totalCount={totalCount}
         onFilter={handleFilter}
       />

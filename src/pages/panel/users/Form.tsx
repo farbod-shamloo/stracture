@@ -370,7 +370,6 @@ const FormComponent = ({
               getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
             >
               <Upload.Dragger
-            
                 name="file"
                 multiple={false}
                 maxCount={1}
