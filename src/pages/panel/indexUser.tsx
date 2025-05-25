@@ -31,7 +31,7 @@ const IndexUser: React.FC = () => {
   });
   const [currentData, setCurrentData] = useState<any[]>([]);
 
-  // همگام‌سازی state با پارامترهای url
+ 
   useEffect(() => {
     const pageFromUrl = parseInt(searchParams.get("page") || "1", 10);
     const perPageFromUrl = parseInt(searchParams.get("perPage") || "5", 10);

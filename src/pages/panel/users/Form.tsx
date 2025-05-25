@@ -61,7 +61,7 @@ const FormComponent = ({
             onChange={(e) => {
               const val = e.target.value.replace(/\D/g, "").slice(0, 10);
               setNationalCodeValue(val);
-              form.setFieldsValue({ nationalCode: val });
+              form.setFieldsValue({ nationalCode: val, userName: val });
             }}
             suffix={`${nationalCodeValue.length}/10`}
             inputMode="numeric"
@@ -214,7 +214,7 @@ const FormComponent = ({
               <Input
                 style={{ backgroundColor: "#fafafa", padding: "8px" }}
                 maxLength={11}
-                disabled={isEditMode}
+                disabled
               />
             </Form.Item>
 
@@ -222,8 +222,19 @@ const FormComponent = ({
               <Form.Item
                 name="passwordRepeat"
                 label="تکرار رمز عبور"
+                dependencies={["password"]}
                 rules={[
                   { required: true, message: "لطفاً رمز عبور را وارد کنید" },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("رمز عبور مطابقت ندارد!")
+                      );
+                    },
+                  }),
                 ]}
               >
                 <Input.Password
@@ -430,7 +441,6 @@ const FormComponent = ({
         </div>
       </div>
 
-      {/* دکمه‌های ارسال */}
       <div className="col-span-1 md:col-span-4 fixed bottom-0 left-0 w-[100%] bg-white p-4 z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.1)] text-left">
         <Button
           onClick={() => navigate(-1)}

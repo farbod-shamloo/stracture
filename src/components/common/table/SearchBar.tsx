@@ -22,11 +22,13 @@ const SearchBar = ({ onSearch,onFilter, searchValue, data , totalCount}: Props) 
     onSearch(term);
   };
 
-  const handleSearchClick = () => {
+  const handleSearchClick = (e) => {
+    e.preventDefault()
     runSearch(search);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const value = e.target.value;
     setSearch(value);
 

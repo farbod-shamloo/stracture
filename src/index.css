@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import '../public/fonts/fontFace.css';
-/* تعریف فونت سفارشی */
+
 
 
 
@@ -9,23 +9,28 @@
   }
   
 
-/* اعمال فونت به کل پروژه */
+
 body, button, input, textarea, span {
   font-family: 'IRANYekanXFaNum', sans-serif;
   direction: rtl;
 }
 
 .even-row {
-  background-color: #f9f9f9; /* مثلاً رنگ روشن */
+  background-color: #f9f9f9; 
 }
 
 .odd-row {
-  background-color: #ffffff; /* رنگ سفید یا دلخواه */
+  background-color: #ffffff; 
 }
 
 
 .custom-user-table .ant-table-thead > tr > th {
-  background-color: #a6afc5; /* مثلاً سورمه‌ای تیره */
-  color: #f1f5f9; /* آبی روشن یا سفید */
+  background-color: #a6afc5; 
+  color: #f1f5f9; 
 }
 
+.ant-input:focus, .ant-input-focused {
+  border-color: #39c3e6 !important;
+  box-shadow: 0 0 0 2px rgba(57, 175, 230, 0.5) !important;
+  outline: none;
+}

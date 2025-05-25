@@ -2,6 +2,8 @@ import { useState } from "react";
 import Actions from "./Actions";
 import { convertToJalali } from "../../../utils/convertToJalali";
 
+import { Popconfirm, message } from "antd";
+
 type TableBodyProps = {
   data: any[];
   columns: { key: string; label: string }[];
@@ -23,18 +25,7 @@ const TableBody: React.FC<TableBodyProps> = ({
     setExpandedRow((prev) => (prev === index ? null : index));
   };
 
-  const handleDelete = (item) => {
-    const confirmDelete = window.confirm(
-      `آیا مطمئن هستید که می‌خواهید کاربر ${item.firstName} ${item.lastName} را حذف کنید؟`
-    );
 
-    if (confirmDelete) {
-      console.log("User deleted:", item);
-      onDelete(item); // حذف کاربر
-    } else {
-      console.log("Delete canceled");
-    }
-  };
 
   const renderCellContent = (colKey, item) => {
     const statusBadge = (text: string, color: string) => {
@@ -70,7 +61,7 @@ const TableBody: React.FC<TableBodyProps> = ({
           ? statusBadge("فعال", "green")
           : statusBadge("غیرفعال", "red");
       case "actions":
-        return <Actions data={data} item={item} onDelete={handleDelete} />;
+        return <Actions data={data} item={item}  />;
       default:
         return item[colKey];
     }

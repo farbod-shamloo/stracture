@@ -4,6 +4,8 @@ import TableBody from "./TableBody";
 import Pagination from "./Pagination";
 import Row from "./Row";
 
+
+
 type UserTableProps = {
   columns: { key: string; label: string }[];
   data: any[];
